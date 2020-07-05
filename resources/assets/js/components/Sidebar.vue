@@ -1,9 +1,8 @@
 <template>
     <nav class="nav flex-column col-md-2 bg-light" style="min-height:100vh;">
-        <a class="nav-link active" href="#">員工資料</a>
-        <a class="nav-link" href="#">包廂資料</a>
-        <a class="nav-link" href="#">餐點資料</a>
-        <a class="nav-link disabled" href="#">Disabled</a>
+        <router-link :to="{ name: 'staff' }" class="nav-link">員工資料</router-link>
+        <router-link :to="{ name: 'room' }" class="nav-link">包廂資料</router-link>
+        <router-link :to="{ name: 'food' }" class="nav-link">餐點資料</router-link>
     </nav>
 </template>
 

@@ -17,17 +17,47 @@ import BootstrapVue from 'bootstrap-vue';
 Vue.use(BootstrapVue);
 
 /**
+ * Initalizing Vue Router
+ */
+import VueRouter from 'vue-router';
+
+Vue.use(VueRouter);
+
+const routes = [
+    {
+        path: '/staff',
+        name: 'staff',
+        component: require('./components/Item.vue').default
+    },
+    {
+        path: '/room',
+        name: 'room',
+        component: require('./components/Item.vue').default
+    },
+    {
+        path: '/food',
+        name: 'food',
+        component: require('./components/Item.vue').default
+    }
+];
+const router = new VueRouter({
+    mode: 'history',
+    routes 
+});
+
+/**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue').default);
+//Vue.component('example', require('./components/Example.vue').default);
 Vue.component('headbar', require('./components/Headbar.vue').default);
 Vue.component('sidebar', require('./components/Sidebar.vue').default);
-Vue.component('item', require('./components/Item.vue').default);
+//Vue.component('item', require('./components/Item.vue').default);
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    router
 });
 

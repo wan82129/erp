@@ -15,14 +15,21 @@
     <body>
         <div class="container-fluid">
             <div id="app">
+
                 <div class="row">
                 @include('layouts.header')
                 </div>
+
                 <div class="row">
                 @include('layouts.sidebar')
-                @yield('content')
+
+                    <div class="col-md-10 bg-white">
+                    @yield('content')
+                    </div>
+
                 @include('layouts.footer')
                 </div>
+
             </div>
         </div>
 

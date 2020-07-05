@@ -8,9 +8,7 @@
 @endsection
  
 @section('content')
-<div class="col-md-10 bg-white" style="min-height:100vh;">
-    <item></item>
-</div>
+<router-view></router-view>
 @endsection
  
 @section('script')
