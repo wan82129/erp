@@ -11,6 +11,9 @@
 |
 */
 
-Route::get('/{url}', function () {
+/*Route::get('/{url}', function () {
     return view('item');
-})->where(['url'=>'|staff|room|food']);
+})->where(['url'=>'|staff|room|food']);*/
+Route::get('/', function () {
+    return view('item');
+});

@@ -25,23 +25,18 @@ Vue.use(VueRouter);
 
 const routes = [
     {
-        path: '/staff',
-        name: 'staff',
-        component: require('./components/Item.vue').default
-    },
-    {
-        path: '/room',
-        name: 'room',
-        component: require('./components/Item.vue').default
-    },
-    {
-        path: '/food',
-        name: 'food',
-        component: require('./components/Item.vue').default
+        path: '/item/:type',
+        component: require('./components/Item.vue').default,
+        children: [
+            {
+                path: 'add',
+                component: require('./components/AddItem.vue').default
+            }
+        ]
     }
 ];
 const router = new VueRouter({
-    mode: 'history',
+    mode: 'abstract',
     routes 
 });
 

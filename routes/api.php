@@ -17,6 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/staffs', function () {
-    return 'fuck';
-});
+Route::get('/staff', 'Item\ItemController@getStaff');
+Route::get('/room', 'Item\ItemController@getRoom');
+Route::get('/food', 'Item\ItemController@getFood');
