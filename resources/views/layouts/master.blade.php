@@ -12,22 +12,24 @@
         <link href="css/app.css" rel="stylesheet">
         @show
     </head>
-    <body>
+    <body style="font-family: Microsoft JhengHei;">
         <div class="container-fluid">
             <div id="app">
 
                 <div class="row">
-                @include('layouts.header')
+                    <div class="col-md-12 bg-dark">
+                    @include('layouts.header')
+                    </div>
                 </div>
 
                 <div class="row">
-                @include('layouts.sidebar')
-
-                    <div class="col-md-10 bg-white">
-                    @yield('content')
+                    <div class="col-md-1 bg-light" style="min-height:100vh;">
+                    @include('layouts.sidebar')
                     </div>
 
-                @include('layouts.footer')
+                    <div class="col-md-11 bg-white">
+                    @yield('content')
+                    </div>
                 </div>
 
             </div>

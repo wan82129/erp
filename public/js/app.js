@@ -1899,53 +1899,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddItem.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AddItem.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      type: ''
-    };
-  },
-  methods: {
-    init: function init() {
-      this.type = this.$route.params.type;
-    }
-  },
-  watch: {
-    '$route.params.type': function $routeParamsType(newVal, oldVal) {
-      this.init();
-    }
-  },
-  mounted: function mounted() {
-    this.init();
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Headbar.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Headbar.vue?vue&type=script&lang=js& ***!
@@ -2026,46 +1979,206 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      type: '',
       items: [],
       item: {},
-      type: '',
-      headerTitle: ''
+      staffAccessLevels: [],
+      staffAccessLevel: {
+        Id: '',
+        Text: ''
+      },
+      headerTitle: '',
+      modalTitle: '',
+      getItemsUrl: '',
+      getStaffAccessLevelUrl: '',
+      isTableReady: false,
+      isModalReady: false
     };
   },
   methods: {
     init: function init() {
+      //頁面載入完成
+      this.isTableReady = false; //跳窗載入完成
+
+      this.isModalReady = false; //取得StaffAccessLevel的API
+
+      this.getStaffAccessLevelUrl = '/api/staffAccessLevel'; //目前頁面種類，覺得title和取得資料的api
+
       this.type = this.$route.params.type;
 
       if (this.type == 'staff') {
         this.headerTitle = '員工資料';
-      } else if (this.type == 'room') {
-        this.headerTitle = '包廂資料';
-      } else if (this.type == 'food') {
-        this.headerTitle = '餐點資料';
-      } else {
-        this.headerTitle = '錯誤';
+        this.getItemsUrl = '/api/staff';
       }
 
+      if (this.type == 'room') {
+        this.headerTitle = '包廂資料';
+        this.getItemsUrl = '/api/room';
+      }
+
+      if (this.type == 'food') {
+        this.headerTitle = '餐點資料';
+        this.getItemsUrl = '/api/food';
+      } //初始化資料
+
+
+      this.initItem(); //取得資料並渲染在頁面上
+
       var self = this;
-      axios.get('/api/' + this.type).then(function (response) {
+      axios.get(this.getItemsUrl).then(function (response) {
         self.items = response.data.data;
-        console.log(self.items);
+        self.isTableReady = true;
       })["catch"](function (response) {
         console.log(response);
       });
     },
-    redirectToAddItem: function redirectToAddItem() {
+    initItem: function initItem() {
+      this.item = {
+        Id: '',
+        Code: '',
+        Name: '',
+        NickName: '',
+        SerialNumber: '',
+        AccessLevelId: '',
+        AccessLevelText: '',
+        Phone: '',
+        Birthday: '',
+        IsActive: ''
+      };
+    },
+    initStaffAccessLevel: function initStaffAccessLevel() {
+      this.staffAccessLevel = {
+        Id: '',
+        Text: ''
+      };
+    },
+    initAddModal: function initAddModal() {
+      //reset modal status
+      this.isModalReady = false; //reset modal data
+
+      this.initItem(); //set modal title
+
+      this.modalTitle = '新增';
+
       if (this.type == 'staff') {
-        this.$router.push('/item/staff/add');
-      } else if (this.type == 'room') {
-        this.$router.push('/item/room/add');
-      } else if (this.type == 'food') {
-        this.$router.push('/item/food/add');
-      } else {
-        this.$router.push('');
+        this.modalTitle += '員工'; //reset staff access level
+
+        this.initStaffAccessLevel();
+        var self = this;
+        axios.get(this.getStaffAccessLevelUrl).then(function (response) {
+          self.staffAccessLevels = response.data.data;
+          self.isModalReady = true;
+        })["catch"](function (response) {
+          console.log(response);
+        });
+      }
+    },
+    initEditModal: function initEditModal(id) {
+      //reset modal status
+      this.isModalReady = false; //reset modal data
+
+      this.initItem(); //set modal title
+
+      this.modalTitle = '編輯';
+
+      if (this.type == 'staff') {
+        this.modalTitle += '員工'; //reset staff access level
+
+        this.initStaffAccessLevel(); //acquire staff access level though backend API
+
+        var self = this;
+        axios.get(this.getStaffAccessLevelUrl).then(function (response) {
+          self.staffAccessLevels = response.data.data;
+          self.isModalReady = true;
+        })["catch"](function (response) {
+          console.log(response);
+        }); //acquire selected data
+
+        for (var i = 0; i < this.items.length; ++i) {
+          if (id == this.items[i].Id) {
+            this.item = this.items[i];
+          }
+        }
       }
     }
   },
@@ -78516,102 +78629,6 @@ var e=function(){return(e=Object.assign||function(e){for(var t,r=1,s=arguments.l
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddItem.vue?vue&type=template&id=4d63816d&":
-/*!*****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AddItem.vue?vue&type=template&id=4d63816d& ***!
-  \*****************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("tr", [
-    _c(
-      "td",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.type === "staff",
-            expression: "type === 'staff'"
-          }
-        ]
-      },
-      [_vm._v("員工001")]
-    ),
-    _vm._v(" "),
-    _c(
-      "td",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.type === "room",
-            expression: "type === 'room'"
-          }
-        ]
-      },
-      [_vm._v("包廂001")]
-    ),
-    _vm._v(" "),
-    _c(
-      "td",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.type === "food",
-            expression: "type === 'food'"
-          }
-        ]
-      },
-      [_vm._v("餐點001")]
-    ),
-    _vm._v(" "),
-    _c("td"),
-    _vm._v(" "),
-    _c("td"),
-    _vm._v(" "),
-    _c("td"),
-    _vm._v(" "),
-    _vm._m(0)
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "button",
-        { staticClass: "btn btn-success", attrs: { type: "button" } },
-        [_vm._v("確認")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-light", attrs: { type: "button" } },
-        [_vm._v("取消")]
-      )
-    ])
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Headbar.vue?vue&type=template&id=65b9a668&":
 /*!*****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Headbar.vue?vue&type=template&id=65b9a668& ***!
@@ -78634,7 +78651,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("nav", { staticClass: "navbar navbar-dark bg-dark col-md-12" }, [
+    return _c("nav", { staticClass: "navbar navbar-dark" }, [
       _c("a", { staticClass: "navbar-brand", attrs: { href: "#" } }, [
         _vm._v("Navbar")
       ])
@@ -78663,252 +78680,471 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container-fluid" }, [
-    _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "card-header" }, [
-        _vm._v(_vm._s(_vm.headerTitle))
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary",
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  return _vm.redirectToAddItem()
-                }
-              }
-            },
-            [_vm._v("新增")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped table-md" }, [
-          _c("thead", [
-            _c("tr", [
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "staff",
-                      expression: "type === 'staff'"
-                    }
-                  ]
-                },
-                [_vm._v("員工Id")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "staff",
-                      expression: "type === 'staff'"
-                    }
-                  ]
-                },
-                [_vm._v("員工編號")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "staff",
-                      expression: "type === 'staff'"
-                    }
-                  ]
-                },
-                [_vm._v("員工名稱")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "staff",
-                      expression: "type === 'staff'"
-                    }
-                  ]
-                },
-                [_vm._v("員工狀態")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "room",
-                      expression: "type === 'room'"
-                    }
-                  ]
-                },
-                [_vm._v("包廂Id")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "room",
-                      expression: "type === 'room'"
-                    }
-                  ]
-                },
-                [_vm._v("包廂編號")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "room",
-                      expression: "type === 'room'"
-                    }
-                  ]
-                },
-                [_vm._v("包廂名稱")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "room",
-                      expression: "type === 'room'"
-                    }
-                  ]
-                },
-                [_vm._v("包廂狀態")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "food",
-                      expression: "type === 'food'"
-                    }
-                  ]
-                },
-                [_vm._v("餐點Id")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "food",
-                      expression: "type === 'food'"
-                    }
-                  ]
-                },
-                [_vm._v("餐點編號")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "food",
-                      expression: "type === 'food'"
-                    }
-                  ]
-                },
-                [_vm._v("餐點名稱")]
-              ),
-              _vm._v(" "),
-              _c(
-                "th",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.type === "food",
-                      expression: "type === 'food'"
-                    }
-                  ]
-                },
-                [_vm._v("餐點狀態")]
-              ),
-              _vm._v(" "),
-              _c("th", [_vm._v("Action")])
-            ])
+    _vm.isTableReady
+      ? _c("div", { staticClass: "card m-2" }, [
+          _c("div", { staticClass: "card-header font-weight-bold" }, [
+            _vm._v(_vm._s(_vm.headerTitle))
           ]),
           _vm._v(" "),
-          _c(
-            "tbody",
-            [
-              _c("router-view"),
-              _vm._v(" "),
-              _vm._l(_vm.items, function(item) {
-                return _c(
-                  "tr",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.type === "staff",
-                        expression: "type === 'staff'"
-                      }
-                    ]
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: {
+                    type: "button",
+                    "data-toggle": "modal",
+                    "data-target": ".bd-example-modal-lg"
                   },
+                  on: {
+                    click: function($event) {
+                      return _vm.initAddModal()
+                    }
+                  }
+                },
+                [_vm._v("\n                    新增\n                ")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped table-md" }, [
+              _c("thead", [
+                _c("tr", [
+                  _vm.type === "staff" ? _c("th", [_vm._v("代號")]) : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type === "staff" ? _c("th", [_vm._v("名稱")]) : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type === "staff" ? _c("th", [_vm._v("簡稱")]) : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type === "staff"
+                    ? _c("th", [_vm._v("身分證")])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type === "staff" ? _c("th", [_vm._v("職務")]) : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type === "staff" ? _c("th", [_vm._v("電話")]) : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type === "staff" ? _c("th", [_vm._v("生日")]) : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type === "staff" ? _c("th", [_vm._v("在職")]) : _vm._e(),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("操作")])
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.type === "staff"
+                ? _c(
+                    "tbody",
+                    _vm._l(_vm.items, function(item) {
+                      return _c("tr", [
+                        _c("td", [_vm._v(_vm._s(item.Code))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.Name))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.NickName))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.SerialNumber))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.AccessLevelText))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.Phone))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.Birthday))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.IsActive))]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-warning",
+                                attrs: {
+                                  type: "button",
+                                  "data-toggle": "modal",
+                                  "data-target": ".bd-example-modal-lg"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.initEditModal(item.Id)
+                                  }
+                                }
+                              },
+                              [_vm._v("修改")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                attrs: { type: "button" }
+                              },
+                              [_vm._v("移除")]
+                            )
+                          ])
+                        ])
+                      ])
+                    }),
+                    0
+                  )
+                : _vm._e()
+            ])
+          ])
+        ])
+      : _c("div", { staticClass: "d-flex justify-content-center m-3" }, [
+          _c("div", {
+            staticClass: "spinner-border",
+            staticStyle: { width: "10rem", height: "10rem" }
+          })
+        ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal bd-example-modal-lg",
+        attrs: {
+          tabindex: "-1",
+          "aria-hidden": "true",
+          "data-keyboard": "false",
+          "data-backdrop": "static"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog modal-lg" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _vm.isModalReady
+              ? _c("div", [
+                  _c("div", { staticClass: "modal-header" }, [
+                    _c("h5", { staticClass: "modal-title font-weight-bold" }, [
+                      _vm._v(_vm._s(_vm.modalTitle))
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(0)
+                  ]),
+                  _vm._v(" "),
+                  _vm.isModalReady
+                    ? _c("div", { staticClass: "modal-body" }, [
+                        _vm.type === "staff"
+                          ? _c("form", [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("員工代號")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.Code,
+                                      expression: "item.Code"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.item.Code },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "Code",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("員工名稱")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.Name,
+                                      expression: "item.Name"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.item.Name },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "Name",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("員工簡稱")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.NickName,
+                                      expression: "item.NickName"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.item.NickName },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "NickName",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("身分證號")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.SerialNumber,
+                                      expression: "item.SerialNumber"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.item.SerialNumber },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "SerialNumber",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("職務")
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.item.AccessLevelId,
+                                        expression: "item.AccessLevelId"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.item,
+                                          "AccessLevelId",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      }
+                                    }
+                                  },
+                                  _vm._l(_vm.staffAccessLevels, function(
+                                    staffAccessLevel
+                                  ) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        domProps: { value: staffAccessLevel.Id }
+                                      },
+                                      [_vm._v(_vm._s(staffAccessLevel.Text))]
+                                    )
+                                  }),
+                                  0
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("電話")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.Phone,
+                                      expression: "item.Phone"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.item.Phone },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "Phone",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("生日")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.Birthday,
+                                      expression: "item.Birthday"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.item.Birthday },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "Birthday",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("在職")
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.item.IsActive,
+                                        expression: "item.IsActive"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.item,
+                                          "IsActive",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("option", [_vm._v("是")]),
+                                    _vm._v(" "),
+                                    _c("option", [_vm._v("否")])
+                                  ]
+                                )
+                              ])
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.type === "room" ? _c("form") : _vm._e(),
+                        _vm._v(" "),
+                        _vm.type === "food" ? _c("form") : _vm._e()
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ])
+              : _c(
+                  "div",
+                  { staticClass: "d-flex justify-content-center m-3" },
                   [
-                    _c("td", [_vm._v(_vm._s(item.id))]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(item.no))]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(item.name))]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(item.status))]),
-                    _vm._v(" "),
-                    _vm._m(0, true)
+                    _c("div", {
+                      staticClass: "spinner-border",
+                      staticStyle: { width: "5rem", height: "5rem" }
+                    })
                   ]
                 )
-              })
-            ],
-            2
-          )
+          ])
         ])
-      ])
-    ])
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -78916,17 +79152,37 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
       _c(
         "button",
-        { staticClass: "btn btn-warning", attrs: { type: "button" } },
-        [_vm._v("修改")]
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("取消")]
       ),
       _vm._v(" "),
       _c(
         "button",
-        { staticClass: "btn btn-danger", attrs: { type: "button" } },
-        [_vm._v("移除")]
+        { staticClass: "btn btn-primary", attrs: { type: "button" } },
+        [_vm._v("確認")]
       )
     ])
   }
@@ -78954,10 +79210,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "nav",
-    {
-      staticClass: "nav flex-column col-md-2 bg-light",
-      staticStyle: { "min-height": "100vh" }
-    },
+    { staticClass: "nav flex-column" },
     [
       _c(
         "router-link",
@@ -94211,11 +94464,7 @@ Vue.use(bootstrap_vue__WEBPACK_IMPORTED_MODULE_0__["default"]);
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var routes = [{
   path: '/item/:type',
-  component: __webpack_require__(/*! ./components/Item.vue */ "./resources/assets/js/components/Item.vue")["default"],
-  children: [{
-    path: 'add',
-    component: __webpack_require__(/*! ./components/AddItem.vue */ "./resources/assets/js/components/AddItem.vue")["default"]
-  }]
+  component: __webpack_require__(/*! ./components/Item.vue */ "./resources/assets/js/components/Item.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'abstract',
@@ -94290,75 +94539,6 @@ if (token) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
-
-/***/ }),
-
-/***/ "./resources/assets/js/components/AddItem.vue":
-/*!****************************************************!*\
-  !*** ./resources/assets/js/components/AddItem.vue ***!
-  \****************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _AddItem_vue_vue_type_template_id_4d63816d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddItem.vue?vue&type=template&id=4d63816d& */ "./resources/assets/js/components/AddItem.vue?vue&type=template&id=4d63816d&");
-/* harmony import */ var _AddItem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddItem.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/AddItem.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _AddItem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _AddItem_vue_vue_type_template_id_4d63816d___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _AddItem_vue_vue_type_template_id_4d63816d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/js/components/AddItem.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/js/components/AddItem.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************!*\
-  !*** ./resources/assets/js/components/AddItem.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddItem.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddItem.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/js/components/AddItem.vue?vue&type=template&id=4d63816d&":
-/*!***********************************************************************************!*\
-  !*** ./resources/assets/js/components/AddItem.vue?vue&type=template&id=4d63816d& ***!
-  \***********************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItem_vue_vue_type_template_id_4d63816d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddItem.vue?vue&type=template&id=4d63816d& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddItem.vue?vue&type=template&id=4d63816d&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItem_vue_vue_type_template_id_4d63816d___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItem_vue_vue_type_template_id_4d63816d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
 
 /***/ }),
 

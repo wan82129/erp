@@ -26,13 +26,7 @@ Vue.use(VueRouter);
 const routes = [
     {
         path: '/item/:type',
-        component: require('./components/Item.vue').default,
-        children: [
-            {
-                path: 'add',
-                component: require('./components/AddItem.vue').default
-            }
-        ]
+        component: require('./components/Item.vue').default
     }
 ];
 const router = new VueRouter({

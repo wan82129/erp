@@ -18,5 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/staff', 'Item\ItemController@getStaff');
+Route::get('/staffAccessLevel', 'Item\ItemController@getStaffAccessLevel');
+
 Route::get('/room', 'Item\ItemController@getRoom');
 Route::get('/food', 'Item\ItemController@getFood');

@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Item;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Services\Item\ItemService;
+
 use App\Http\Requests\Item\ItemRequest;
 
 use App\Http\Resources\Item\ItemResource;
 
 class ItemController extends Controller
 {
+    protected $ItemService;
+
+    public function __construct(ItemService $itemService)
+    {
+        $this->ItemService = $itemService;
+    }
     /**
      * get item
      *
@@ -19,20 +27,21 @@ class ItemController extends Controller
      */
     public function getStaff(ItemRequest $request)
     {
-        $result = collect([
-            [
-                'id' => 1,
-                'no' => 001,
-                'name' => 'Kai',
-                'status' => 'Green'
-            ],
-            [
-                'id' => 2,
-                'no' => 002,
-                'name' => 'Lora',
-                'status' => 'Red'
-            ]
-        ]);
+        $result = $this->ItemService->getStaff();
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * get staff access level
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function getStaffAccessLevel(ItemRequest $request)
+    {
+        $result = $this->ItemService->getStaffAccessLevel();
+        
         return new ItemResource($result);
     }
 

@@ -17,14 +17,7 @@ class ItemResource extends Resource
         return [
             "status" => "success",
             "code" => "1",
-            "data" => $this->resource->transform(function($item, $key) {
-                return [
-                    'id' => $item['id'],
-                    'no' => $item['no'],
-                    'name' => $item['name'],
-                    'status' => $item['status']
-                ];
-            })
+            "data" => $this->resource
         ];
     }
 }
