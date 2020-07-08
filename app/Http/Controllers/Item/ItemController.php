@@ -53,7 +53,7 @@ class ItemController extends Controller
      */
     public function getRoom(ItemRequest $request)
     {
-        return new ItemResource('room');
+        return new ItemResource([]);
     }
 
     /**
@@ -64,6 +64,6 @@ class ItemController extends Controller
      */
     public function getFood(ItemRequest $request)
     {
-        return new ItemResource('food');
+        return new ItemResource([]);
     }
 }

@@ -3,45 +3,36 @@
         <div class="card m-2" v-if="isTableReady">
             <div class="card-header font-weight-bold">{{ headerTitle }}</div>
             <div class="card-body">
-                <div class="form-group">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" @click="initAddModal()">
-                        新增
-                    </button>
+                <div class="d-flex">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" @click="initAddModal()">
+                            新增
+                        </button>
+                    </div>
+                    <div class="form-group ml-auto">
+                        <input type="text" class="form-control" placeholder="搜尋" v-model="filter">
+                    </div>
                 </div>
-                <table class="table table-striped table-md">
-                    <thead>
-                        <tr>
-                            <th v-if="type === 'staff'">代號</th>
-                            <th v-if="type === 'staff'">名稱</th>
-                            <th v-if="type === 'staff'">簡稱</th>
-                            <th v-if="type === 'staff'">身分證</th>
-                            <th v-if="type === 'staff'">職務</th>
-                            <th v-if="type === 'staff'">電話</th>
-                            <th v-if="type === 'staff'">生日</th>
-                            <th v-if="type === 'staff'">在職</th>
-                            
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody v-if="type === 'staff'">
-                        <tr v-for="item in items">
-                            <td>{{ item.Code }}</td>
-                            <td>{{ item.Name }}</td>
-                            <td>{{ item.NickName }}</td>
-                            <td>{{ item.SerialNumber }}</td>
-                            <td>{{ item.AccessLevelText }}</td>
-                            <td>{{ item.Phone }}</td>
-                            <td>{{ item.Birthday }}</td>
-                            <td>{{ item.IsActive }}</td>
-                            <td>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".bd-example-modal-lg" @click="initEditModal(item.Id)">修改</button>
-                                    <button type="button" class="btn btn-danger">移除</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <b-table striped hover :items="items" :fields="fields" :filter="filter" :current-page="currentPage" :per-page="perPage" @filtered="onFiltered">
+                    <template v-slot:cell(Actions)="row">
+                        <b-button class="btn-warning" data-toggle="modal" data-target=".bd-example-modal-lg" @click="initEditModal(row.item)">
+                            修改
+                        </b-button>
+                        <b-button class="btn-danger">
+                            移除
+                        </b-button>
+                    </template>
+                </b-table>
+                <div class="d-flex">
+                    <div class="ml-auto">
+                        <b-pagination
+                            v-model="currentPage"
+                            :total-rows="totalRows"
+                            :per-page="perPage"
+                            align="fill">
+                        </b-pagination>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -60,8 +51,8 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body" v-if="isModalReady">
-                            <form v-if="type === 'staff'">
+                        <div class="modal-body">
+                            <form v-if="type === GLOBAL.SERVICE_STAFF">
                                 <div class="form-group">
                                     <label class="col-form-label">員工代號</label>
                                     <input type="text" class="form-control" v-model="item.Code">
@@ -101,10 +92,10 @@
                                 </div>
                             </form>
                             
-                            <form v-if="type === 'room'">
+                            <form v-if="type === GLOBAL.SERVICE_ROOM">
                             </form>
 
-                            <form v-if="type === 'food'">
+                            <form v-if="type === GLOBAL.SERVICE_FOOD">
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -129,8 +120,15 @@
             return {
                 type: '',
 
+                fields: [],
                 items: [],
                 item: {},
+
+                filter: '',
+
+                totalRows: '',
+                currentPage: '',
+                perPage: '',
 
                 staffAccessLevels: [],
                 staffAccessLevel: {
@@ -160,21 +158,22 @@
 
                 //目前頁面種類，覺得title和取得資料的api
                 this.type = this.$route.params.type;
-                if (this.type == 'staff') {
+                if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.headerTitle = '員工資料';
-                    this.getItemsUrl = '/api/staff';
-
                 } 
-                if (this.type == 'room') {
+                if (this.type == this.GLOBAL.SERVICE_ROOM) {
                     this.headerTitle = '包廂資料';
-                    this.getItemsUrl = '/api/room';
                 }
-                if (this.type == 'food') {
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
                     this.headerTitle = '餐點資料';
-                    this.getItemsUrl = '/api/food';
                 }
+                this.getItemsUrl = '/api/' + this.type;
+
+                //初始化表格欄位
+                this.initFields();
 
                 //初始化資料
+                this.items= [];
                 this.initItem();
 
                 //取得資料並渲染在頁面上
@@ -182,23 +181,102 @@
                 axios.get(this.getItemsUrl).then(function (response) {
                     self.items = response.data.data;
 
+                    self.filter = '';
+                    self.totalRows = self.items.length;
+                    self.currentPage = 1;
+                    self.perPage = 20;
+
                     self.isTableReady = true;
                 }).catch(function (response) {
                     console.log(response);
                 });
             },
+            initFields() {
+                this.fields = [];
+                if (this.type == this.GLOBAL.SERVICE_STAFF) {
+                    this.fields = [
+                        {
+                            key: 'Code',
+                            label: '代號',
+                            sortable: true
+                        },
+                        {
+                            key: 'Name',
+                            label: '名稱',
+                            sortable: true
+                        },
+                        {
+                            key: 'NickName',
+                            label: '簡稱'
+                        },
+                        {
+                            key: 'SerialNumber',
+                            label: '身分證'
+                        },
+                        {
+                            key: 'AccessLevelText',
+                            label: '職務'
+                        },
+                        {
+                            key: 'Phone',
+                            label: '電話'
+                        },
+                        {
+                            key: 'Birthday',
+                            label: '生日'
+                        },
+                        {
+                            key: 'IsActive',
+                            label: '在職'
+                        },
+                        {
+                            key: 'Actions',
+                            label: '操作'
+                        }
+                    ];
+                }
+                if (this.type == this.GLOBAL.SERVICE_ROOM) {
+                    this.fields = [
+                        {
+                            key: 'Code',
+                            label: '包廂代號',
+                            sortable: true
+                        },
+                        {
+                            key: 'Actions',
+                            label: '操作'
+                        }
+                    ];
+                }
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
+                    this.fields = [
+                        {
+                            key: 'Code',
+                            label: '餐點代號',
+                            sortable: true
+                        },
+                        {
+                            key: 'Actions',
+                            label: '操作'
+                        }
+                    ];
+                }
+            },
             initItem() {
-                this.item = {
-                    Id: '',
-                    Code: '',
-                    Name: '',
-                    NickName: '',
-                    SerialNumber: '',
-                    AccessLevelId: '',
-                    AccessLevelText: '',
-                    Phone: '',
-                    Birthday: '',
-                    IsActive: ''
+                this.item = {};
+                if (this.type == this.GLOBAL.SERVICE_STAFF) {
+                    this.item = {
+                        Id: '',
+                        Code: '',
+                        Name: '',
+                        NickName: '',
+                        SerialNumber: '',
+                        AccessLevelId: '',
+                        AccessLevelText: '',
+                        Phone: '',
+                        Birthday: '',
+                        IsActive: ''
+                    }
                 }
             },
             initStaffAccessLevel() {
@@ -217,7 +295,7 @@
                 //set modal title
                 this.modalTitle = '新增';
 
-                if (this.type == 'staff') {
+                if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.modalTitle += '員工';
 
                     //reset staff access level
@@ -232,19 +310,30 @@
                         console.log(response);
                     });
                 }
+                
+                if (this.type == this.GLOBAL.SERVICE_ROOM) {
+                    this.modalTitle += '包廂';
+
+                    this.isModalReady = true;
+                }
+                
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
+                    this.modalTitle += '餐點';
+
+                    this.isModalReady = true;
+                }
             },
-            initEditModal(id) {
+            initEditModal(item) {
                 //reset modal status
                 this.isModalReady = false;
 
                 //reset modal data
                 this.initItem();
 
-
                 //set modal title
                 this.modalTitle = '編輯';
 
-                if (this.type == 'staff') {
+                if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.modalTitle += '員工';
 
                     //reset staff access level
@@ -261,12 +350,12 @@
                     });
 
                     //acquire selected data
-                    for (var i = 0; i < this.items.length; ++i) {
-                        if (id == this.items[i].Id) {
-                            this.item = this.items[i];
-                        }
-                    }
+                    this.item = item;
                 }
+            },
+            onFiltered(filteredItems) {
+                this.totalRows = filteredItems.length
+                this.currentPage = 1
             }
         },
         watch: {

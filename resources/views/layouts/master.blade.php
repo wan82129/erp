@@ -10,11 +10,16 @@
 
         @section('style')
         <link href="css/app.css" rel="stylesheet">
+        <style>
+            body, html {
+                height: 100%;
+            }
+        </style>
         @show
     </head>
     <body style="font-family: Microsoft JhengHei;">
-        <div class="container-fluid">
-            <div id="app">
+        <div class="container-fluid h-100">
+            <div id="app" class="h-100 d-flex flex-column">
 
                 <div class="row">
                     <div class="col-md-12 bg-dark">
@@ -22,8 +27,8 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-1 bg-light" style="min-height:100vh;">
+                <div class="row flex-grow-1">
+                    <div class="col-md-1 bg-light">
                     @include('layouts.sidebar')
                     </div>
 
