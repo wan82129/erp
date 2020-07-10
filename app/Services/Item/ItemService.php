@@ -45,6 +45,52 @@ class ItemService
     }
 
     /**
+     * 新增staff
+     */
+    public function addStaff($code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $isActive)
+    {
+        if ($isActive == '是') {
+            $isActive = '1';
+        }
+        else {
+            $isActive = '0';
+        }
+
+        $result = $this->ItemRepository->addStaff($code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $isActive);
+
+        //驗證是否新增成功
+        if ($result->Code == $code) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 編輯staff
+     */
+    public function editStaff($id, $code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $isActive)
+    {
+        if ($isActive == '是') {
+            $isActive = '1';
+        }
+        else {
+            $isActive = '0';
+        }
+
+        $result = $this->ItemRepository->editStaff($id, $code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $isActive);
+
+        //驗證是否新增成功
+        if ($result == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
      * 取得StaffAccessLevel
      */
     public function getStaffAccessLevel()

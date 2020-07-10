@@ -2045,6 +2045,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2063,10 +2066,16 @@ __webpack_require__.r(__webpack_exports__);
       },
       headerTitle: '',
       modalTitle: '',
+      modalActionAdd: 'add',
+      modalActionEdit: 'edit',
+      modalAction: '',
       getItemsUrl: '',
+      addItemUrl: '',
+      editItemUrl: '',
       getStaffAccessLevelUrl: '',
       isTableReady: false,
-      isModalReady: false
+      isModalReady: false,
+      isItemApiReady: true
     };
   },
   methods: {
@@ -2074,7 +2083,9 @@ __webpack_require__.r(__webpack_exports__);
       //頁面載入完成
       this.isTableReady = false; //跳窗載入完成
 
-      this.isModalReady = false; //取得StaffAccessLevel的API
+      this.isModalReady = false; //ITEM操作API按鈕是否可按
+
+      this.isItemApiReady = true; //取得StaffAccessLevel的API
 
       this.getStaffAccessLevelUrl = '/api/staffAccessLevel'; //目前頁面種類，覺得title和取得資料的api
 
@@ -2092,7 +2103,9 @@ __webpack_require__.r(__webpack_exports__);
         this.headerTitle = '餐點資料';
       }
 
-      this.getItemsUrl = '/api/' + this.type; //初始化表格欄位
+      this.getItemsUrl = '/api/' + this.type;
+      this.addItemUrl = '/api/' + this.type;
+      this.editItemUrl = '/api/' + this.type; //初始化表格欄位
 
       this.initFields(); //初始化資料
 
@@ -2195,7 +2208,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     initAddModal: function initAddModal() {
       //reset modal status
-      this.isModalReady = false; //reset modal data
+      this.isModalReady = false; //setting modal action
+
+      this.modalAction = this.modalActionAdd; //ITEM操作API按鈕是否可按
+
+      this.isItemApiReady = true; //reset modal data
 
       this.initItem(); //set modal title
 
@@ -2226,7 +2243,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     initEditModal: function initEditModal(item) {
       //reset modal status
-      this.isModalReady = false; //reset modal data
+      this.isModalReady = false; //setting modal action
+
+      this.modalAction = this.modalActionEdit; //ITEM操作API按鈕是否可按
+
+      this.isItemApiReady = true; //reset modal data
 
       this.initItem(); //set modal title
 
@@ -2251,6 +2272,36 @@ __webpack_require__.r(__webpack_exports__);
     onFiltered: function onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
+    },
+    operateItem: function operateItem() {
+      this.isItemApiReady = false;
+      var self = this;
+
+      if (this.modalAction == this.modalActionAdd) {
+        axios.post(this.addItemUrl, this.item).then(function (response) {
+          if (response.data.data == true) {
+            self.$refs['modalClose'].click();
+            self.init();
+          } else {
+            self.isItemApiReady = true;
+          }
+        })["catch"](function (response) {
+          self.isItemApiReady = true;
+        });
+      }
+
+      if (this.modalAction == this.modalActionEdit) {
+        axios.put(this.editItemUrl, this.item).then(function (response) {
+          if (response.data.data == true) {
+            self.$refs['modalClose'].click();
+            self.init();
+          } else {
+            self.isItemApiReady = true;
+          }
+        })["catch"](function (response) {
+          self.isItemApiReady = true;
+        });
+      }
     }
   },
   watch: {
@@ -78930,7 +78981,23 @@ var render = function() {
                       _vm._v(_vm._s(_vm.modalTitle))
                     ]),
                     _vm._v(" "),
-                    _vm._m(0)
+                    _c(
+                      "button",
+                      {
+                        ref: "modalClose",
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "modal",
+                          "aria-label": "Close"
+                        }
+                      },
+                      [
+                        _c("span", { attrs: { "aria-hidden": "true" } }, [
+                          _vm._v("×")
+                        ])
+                      ]
+                    )
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-body" }, [
@@ -79162,7 +79229,7 @@ var render = function() {
                                 }
                               ],
                               staticClass: "form-control",
-                              attrs: { type: "text" },
+                              attrs: { type: "date" },
                               domProps: { value: _vm.item.Birthday },
                               on: {
                                 input: function($event) {
@@ -79234,7 +79301,42 @@ var render = function() {
                     _vm.type === _vm.GLOBAL.SERVICE_FOOD ? _c("form") : _vm._e()
                   ]),
                   _vm._v(" "),
-                  _vm._m(1)
+                  _c(
+                    "div",
+                    { staticClass: "modal-footer" },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          attrs: { type: "button", "data-dismiss": "modal" }
+                        },
+                        [_vm._v("取消")]
+                      ),
+                      _vm._v(" "),
+                      _vm.isItemApiReady
+                        ? _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-primary",
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.operateItem()
+                                }
+                              }
+                            },
+                            [_vm._v("確認")]
+                          )
+                        : _c(
+                            "b-button",
+                            { attrs: { variant: "primary", disabled: "" } },
+                            [_c("b-spinner", { attrs: { small: "" } })],
+                            1
+                          )
+                    ],
+                    1
+                  )
                 ])
               : _c(
                   "div",
@@ -79252,46 +79354,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-secondary",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [_vm._v("取消")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "button" } },
-        [_vm._v("確認")]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

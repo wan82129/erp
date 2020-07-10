@@ -19,8 +19,9 @@ class ItemController extends Controller
     {
         $this->ItemService = $itemService;
     }
+
     /**
-     * get item
+     * get staff
      *
      * @param App\Http\Requests\Item\ItemRequest
      * @return App\Http\Resources\Item\ItemResource
@@ -28,6 +29,51 @@ class ItemController extends Controller
     public function getStaff(ItemRequest $request)
     {
         $result = $this->ItemService->getStaff();
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * add staff
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function addStaff(ItemRequest $request)
+    {
+        $result = $this->ItemService->addStaff(
+            $request->Code, 
+            $request->Name, 
+            $request->NickName,
+            $request->SerialNumber,
+            $request->AccessLevelId,
+            $request->Phone,
+            $request->Birthday,
+            $request->IsActive
+        );
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * edit staff
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function editStaff(ItemRequest $request)
+    {
+        $result = $this->ItemService->editStaff(
+            $request->Id,
+            $request->Code, 
+            $request->Name, 
+            $request->NickName,
+            $request->SerialNumber,
+            $request->AccessLevelId,
+            $request->Phone,
+            $request->Birthday,
+            $request->IsActive
+        );
         
         return new ItemResource($result);
     }

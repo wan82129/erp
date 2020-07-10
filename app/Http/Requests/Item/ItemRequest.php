@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Route;
 
 class ItemRequest extends FormRequest
 {
@@ -27,7 +28,33 @@ class ItemRequest extends FormRequest
      */
     public function rules()
     {
+        if (Route::current()->uri == 'api/staff') {
+            if (Route::current()->methods[0] == 'GET') {
+                return [
+                ];
+            }
+            if (Route::current()->methods[0] == 'POST' || Route::current()->methods[0] == 'PUT') {
+                return [
+                    'Id' => 'required',
+                    'Code'=> 'required',
+                    'Name'=> 'required',
+                    'NickName'=> 'required',
+                    'SerialNumber'=> 'required',
+                    'AccessLevelId'=> 'required',
+                    'Phone'=> 'required',
+                    'Birthday'=> 'required',
+                    'IsActive'=> 'required'
+                ];
+            }
+        }
+        if (Route::current()->uri == 'api/staffAccessLevel') {
+            return [
+            ];
+        }
+
+        //default
         return [
+
         ];
     }
 

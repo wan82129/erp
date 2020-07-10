@@ -47,7 +47,7 @@
                     <div v-if="isModalReady">
                         <div class="modal-header">
                             <h5 class="modal-title font-weight-bold">{{ modalTitle }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" ref="modalClose">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-form-label">生日</label>
-                                    <input type="text" class="form-control" v-model="item.Birthday">
+                                    <input type="date" class="form-control" v-model="item.Birthday">
                                 </div>
                                 <div class="form-group">
                                     <label class="col-form-label">在職</label>
@@ -100,7 +100,10 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary">確認</button>
+                            <button type="button" class="btn btn-primary" @click="operateItem()" v-if="isItemApiReady">確認</button>
+                            <b-button variant="primary" disabled v-else>
+                                <b-spinner small></b-spinner>
+                            </b-button>
                         </div>
                     </div>
                     <div class="d-flex justify-content-center m-3" v-else>
@@ -138,12 +141,18 @@
 
                 headerTitle: '',
                 modalTitle: '',
+                modalActionAdd: 'add',
+                modalActionEdit: 'edit',
+                modalAction: '',
 
                 getItemsUrl: '',
+                addItemUrl: '',
+                editItemUrl: '',
                 getStaffAccessLevelUrl: '',
 
                 isTableReady: false,
                 isModalReady: false,
+                isItemApiReady: true
             }
         },
         methods: {
@@ -152,6 +161,8 @@
                 this.isTableReady = false;
                 //跳窗載入完成
                 this.isModalReady = false;
+                //ITEM操作API按鈕是否可按
+                this.isItemApiReady = true;
 
                 //取得StaffAccessLevel的API
                 this.getStaffAccessLevelUrl = '/api/staffAccessLevel';
@@ -168,6 +179,8 @@
                     this.headerTitle = '餐點資料';
                 }
                 this.getItemsUrl = '/api/' + this.type;
+                this.addItemUrl = '/api/' + this.type;
+                this.editItemUrl = '/api/' + this.type;
 
                 //初始化表格欄位
                 this.initFields();
@@ -289,6 +302,12 @@
                 //reset modal status
                 this.isModalReady = false;
 
+                //setting modal action
+                this.modalAction = this.modalActionAdd;
+
+                //ITEM操作API按鈕是否可按
+                this.isItemApiReady = true;
+
                 //reset modal data
                 this.initItem();
 
@@ -327,6 +346,12 @@
                 //reset modal status
                 this.isModalReady = false;
 
+                //setting modal action
+                this.modalAction = this.modalActionEdit;
+
+                //ITEM操作API按鈕是否可按
+                this.isItemApiReady = true;
+
                 //reset modal data
                 this.initItem();
 
@@ -356,6 +381,37 @@
             onFiltered(filteredItems) {
                 this.totalRows = filteredItems.length
                 this.currentPage = 1
+            },
+            operateItem() {
+                this.isItemApiReady = false;
+
+                let self = this;
+                if (this.modalAction == this.modalActionAdd) {
+                    axios.post(this.addItemUrl, this.item).then(function (response) {
+                        if (response.data.data == true) {
+                            self.$refs['modalClose'].click();
+                            self.init();
+                        }
+                        else {
+                            self.isItemApiReady = true;
+                        }
+                    }).catch(function (response) {
+                        self.isItemApiReady = true;
+                    });
+                }
+                if (this.modalAction == this.modalActionEdit) {
+                    axios.put(this.editItemUrl, this.item).then(function (response) {
+                        if (response.data.data == true) {
+                            self.$refs['modalClose'].click();
+                            self.init();
+                        }
+                        else {
+                            self.isItemApiReady = true;
+                        }
+                    }).catch(function (response) {
+                        self.isItemApiReady = true;
+                    });
+                }
             }
         },
         watch: {
