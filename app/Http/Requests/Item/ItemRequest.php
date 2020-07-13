@@ -33,7 +33,19 @@ class ItemRequest extends FormRequest
                 return [
                 ];
             }
-            if (Route::current()->methods[0] == 'POST' || Route::current()->methods[0] == 'PUT') {
+            if (Route::current()->methods[0] == 'POST') {
+                return [
+                    'Code'=> 'required',
+                    'Name'=> 'required',
+                    'NickName'=> 'required',
+                    'SerialNumber'=> 'required',
+                    'AccessLevelId'=> 'required',
+                    'Phone'=> 'required',
+                    'Birthday'=> 'required',
+                    'IsActive'=> 'required'
+                ];
+            }
+            if (Route::current()->methods[0] == 'PUT') {
                 return [
                     'Id' => 'required',
                     'Code'=> 'required',
