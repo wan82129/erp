@@ -17,20 +17,44 @@ class ItemRepository
      * get staff
      *
      */
-    public function getStaff()
+    public function getStaff($sortBy, $sortDirection, $currentPage, $perPage, $filter)
     {
+        $filter = '%'.$filter.'%';
+
         $result = $this->StaffModel
             ->with('StaffAccessLevel')
+            ->where('Status', 'Use')
+            ->where(function ($query) use ($filter) {
+                $query->where('Code', 'LIKE', $filter)
+                      ->orWhere('Name', 'LIKE', $filter);
+            })
+            ->where('Code', 'Like', $filter)
+            ->orWhere('Name', 'Like', $filter)
+            ->orderBy($sortBy, $sortDirection)
+            ->orderBy('UpdatedTime', 'DESC')
+            ->skip(($currentPage - 1) * $perPage)->take($perPage)
             ->get();
 
         return $result;
     }
 
     /**
+     * get staff count
+     *
+     */
+    public function getStaffCount()
+    {
+        $result = $this->StaffModel::count();
+
+        return $result;
+    }
+
+
+    /**
      * add staff
      *
      */
-    public function addStaff($code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $isActive)
+    public function addStaff($code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $contact, $residence, $note, $isActive, $arrived, $leaved)
     {
         $staff = $this->StaffModel::create([
             'Code' => $code,
@@ -40,7 +64,12 @@ class ItemRepository
             'AccessLevelId' => $accessLevelId,
             'Phone' => $phone,
             'Birthday' => $birthday,
-            'IsActive' => $isActive
+            'ContactAddress' => $contact,
+            'ResidenceAddress' => $residence,
+            'Note' => $note,
+            'IsActive' => $isActive,
+            'ArrivedDate' => $arrived,
+            'LeavedDate' => $leaved
         ]);
 
         return $staff;
@@ -50,7 +79,7 @@ class ItemRepository
      * edit staff
      *
      */
-    public function editStaff($id, $code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $isActive)
+    public function editStaff($id, $code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $contact, $residence, $note, $isActive, $arrived, $leaved)
     {
         $staff = $this->StaffModel::find($id);
 
@@ -61,7 +90,27 @@ class ItemRepository
         $staff->AccessLevelId = $accessLevelId;
         $staff->Phone = $phone;
         $staff->Birthday = $birthday;
+        $staff->ContactAddress = $contact;
+        $staff->ResidenceAddress = $residence;
+        $staff->Note = $note;
         $staff->IsActive = $isActive;
+        $staff->ArrivedDate = $arrived;
+        $staff->LeavedDate = $leaved;
+
+        $staff->save();
+
+        return $staff;
+    }
+
+    /**
+     * edit staff
+     *
+     */
+    public function deleteStaff($id)
+    {
+        $staff = $this->StaffModel::find($id);
+
+        $staff->Status = 'Delete';
 
         $staff->save();
 

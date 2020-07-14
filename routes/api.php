@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/staff', 'Item\ItemController@getStaff');
 Route::post('/staff', 'Item\ItemController@addStaff');
 Route::put('/staff', 'Item\ItemController@editStaff');
+Route::delete('/staff', 'Item\ItemController@deleteStaff');
 
 Route::get('/staffAccessLevel', 'Item\ItemController@getStaffAccessLevel');
 

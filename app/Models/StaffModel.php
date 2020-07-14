@@ -9,7 +9,7 @@ class StaffModel extends Model
     protected $connection = 'mysql';
     protected $table = 'Staff';
     protected $primaryKey = 'Id';
-    protected $fillable = ['Code', 'Name', 'NickName', 'SerialNumber', 'AccessLevelId', 'Phone', 'Birthday', 'IsActive'];
+    protected $fillable = ['Code', 'Name', 'NickName', 'SerialNumber', 'AccessLevelId', 'Phone', 'Birthday', 'ContactAddress', 'ResidenceAddress', 'Note', 'IsActive', 'ArrivedDate', 'LeavedDate'];
 
     public $timestamps = false;
     

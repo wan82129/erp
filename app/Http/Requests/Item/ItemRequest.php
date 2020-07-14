@@ -42,7 +42,12 @@ class ItemRequest extends FormRequest
                     'AccessLevelId'=> 'required',
                     'Phone'=> 'required',
                     'Birthday'=> 'required',
-                    'IsActive'=> 'required'
+                    'ContactAddress' => 'required',
+                    'ResidenceAddress' => 'required',
+                    'Note' => 'required',
+                    'IsActive'=> 'required',
+                    'ArrivedDate' => 'required',
+                    'LeavedDate' => 'present'
                 ];
             }
             if (Route::current()->methods[0] == 'PUT') {
@@ -55,10 +60,21 @@ class ItemRequest extends FormRequest
                     'AccessLevelId'=> 'required',
                     'Phone'=> 'required',
                     'Birthday'=> 'required',
-                    'IsActive'=> 'required'
+                    'ContactAddress' => 'required',
+                    'ResidenceAddress' => 'required',
+                    'Note' => 'required',
+                    'IsActive'=> 'required',
+                    'ArrivedDate' => 'required',
+                    'LeavedDate' => 'required'
+                ];
+            }
+            if (Route::current()->methods[0] == 'DELETE') {
+                return [
+                    'Id' => 'required'
                 ];
             }
         }
+
         if (Route::current()->uri == 'api/staffAccessLevel') {
             return [
             ];
