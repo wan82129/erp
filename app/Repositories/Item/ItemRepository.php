@@ -28,8 +28,6 @@ class ItemRepository
                 $query->where('Code', 'LIKE', $filter)
                       ->orWhere('Name', 'LIKE', $filter);
             })
-            ->where('Code', 'Like', $filter)
-            ->orWhere('Name', 'Like', $filter)
             ->orderBy($sortBy, $sortDirection)
             ->orderBy('UpdatedTime', 'DESC')
             ->skip(($currentPage - 1) * $perPage)->take($perPage)

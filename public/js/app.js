@@ -2109,6 +2109,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2137,10 +2140,12 @@ __webpack_require__.r(__webpack_exports__);
       addItemUrl: '',
       editItemUrl: '',
       deleteItemUrl: '',
+      exportItemUrl: '',
       getStaffAccessLevelUrl: '',
       isTableReady: false,
       isModalReady: false,
-      isItemApiReady: true
+      isItemApiReady: true,
+      isExportItemApiReady: true
     };
   },
   methods: {
@@ -2169,6 +2174,7 @@ __webpack_require__.r(__webpack_exports__);
       this.addItemUrl = '/api/' + this.type;
       this.editItemUrl = '/api/' + this.type;
       this.deleteItemUrl = '/api/' + this.type;
+      this.exportItemUrl = '/api/' + this.type + '/export';
       this.filter = '';
       this.sortBy = 'Name';
       this.sortDesc = false;
@@ -2453,6 +2459,26 @@ __webpack_require__.r(__webpack_exports__);
         self.currentPage = response.data.data.currentPage;
         self.perPage = response.data.data.perPage;
         self.isTableReady = true;
+      })["catch"](function (response) {});
+    },
+    exportItem: function exportItem() {
+      this.isExportItemApiReady = false;
+      var filename = this.type + '.xlsx'; //下載
+
+      var self = this;
+      axios.request({
+        method: 'GET',
+        url: this.exportItemUrl,
+        responseType: 'arraybuffer'
+      }).then(function (response) {
+        var url = window.URL.createObjectURL(new Blob([response.data]));
+        console.log(url);
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        link.click();
+        window.URL.revokeObjectURL(url);
+        self.isExportItemApiReady = true;
       })["catch"](function (response) {});
     },
     onPageChanged: function onPageChanged(e) {
@@ -78990,31 +79016,61 @@ var render = function() {
             { staticClass: "card-body" },
             [
               _c("div", { staticClass: "d-flex" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: {
-                        type: "button",
-                        "data-toggle": "modal",
-                        "data-target": ".bd-example-modal-lg"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.initAddModal()
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: {
+                          type: "button",
+                          "data-toggle": "modal",
+                          "data-target": ".bd-example-modal-lg"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.initAddModal()
+                          }
                         }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        新增\n                    "
-                      )
-                    ]
-                  )
-                ]),
+                      },
+                      [
+                        _vm._v(
+                          "\n                        新增\n                    "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm.isExportItemApiReady
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                return _vm.exportItem()
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                        匯出\n                    "
+                            )
+                          ]
+                        )
+                      : _c(
+                          "b-button",
+                          { attrs: { variant: "primary", disabled: "" } },
+                          [_c("b-spinner", { attrs: { small: "" } })],
+                          1
+                        )
+                  ],
+                  1
+                ),
                 _vm._v(" "),
-                _c("div", { staticClass: "form-inline ml-auto" }, [
+                _c("div", { staticClass: "form-group ml-auto" }, [
                   _c("input", {
                     directives: [
                       {
@@ -79028,6 +79084,21 @@ var render = function() {
                     attrs: { type: "text", placeholder: "請輸入關鍵字" },
                     domProps: { value: _vm.filter },
                     on: {
+                      keyup: function($event) {
+                        if (
+                          !$event.type.indexOf("key") &&
+                          _vm._k(
+                            $event.keyCode,
+                            "enter",
+                            13,
+                            $event.key,
+                            "Enter"
+                          )
+                        ) {
+                          return null
+                        }
+                        return _vm.onFiltered()
+                      },
                       input: function($event) {
                         if ($event.target.composing) {
                           return
@@ -79035,25 +79106,7 @@ var render = function() {
                         _vm.filter = $event.target.value
                       }
                     }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { type: "button" },
-                      on: {
-                        click: function($event) {
-                          return _vm.onFiltered()
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        搜尋\n                    "
-                      )
-                    ]
-                  )
+                  })
                 ])
               ]),
               _vm._v(" "),

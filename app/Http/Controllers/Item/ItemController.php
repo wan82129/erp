@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Item;
 
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
+
+use App\Exports\StaffExport;
 
 use App\Services\Item\ItemService;
 
@@ -168,7 +171,41 @@ class ItemController extends Controller
      */
     public function getRoom(ItemRequest $request)
     {
-        return new ItemResource([]);
+        if ($request->has('SortBy') && $request->SortBy != '') {
+            $sortBy = $request->SortBy;
+        }
+        else {
+            $sortBy = $this->sortBy;
+        }
+        if ($request->has('SortDesc') && $request->SortDesc != '') {
+            $sortDesc = $request->SortDesc;
+        }
+        else {
+            $sortDesc = $this->sortDesc;
+        }
+        if ($request->has('CurrentPage') && $request->CurrentPage != '') {
+            $currentPage = $request->CurrentPage;
+        }
+        else {
+            $currentPage = $this->currentPage;
+        }
+        if ($request->has('Filter') && $request->Filter != '') {
+            $filter = $request->Filter;
+        }
+        else {
+            $filter = $this->filter;
+        }
+
+        if ($sortDesc == 'true') {
+            $sortDirection = 'desc';
+        }
+        else {
+            $sortDirection = 'asc';
+        }
+
+        $result = $this->ItemService->getRoom($sortBy, $sortDirection, $currentPage, $this->perPage, $filter);
+        
+        return new ItemResource($result);
     }
 
     /**
@@ -179,6 +216,51 @@ class ItemController extends Controller
      */
     public function getFood(ItemRequest $request)
     {
-        return new ItemResource([]);
+        if ($request->has('SortBy') && $request->SortBy != '') {
+            $sortBy = $request->SortBy;
+        }
+        else {
+            $sortBy = $this->sortBy;
+        }
+        if ($request->has('SortDesc') && $request->SortDesc != '') {
+            $sortDesc = $request->SortDesc;
+        }
+        else {
+            $sortDesc = $this->sortDesc;
+        }
+        if ($request->has('CurrentPage') && $request->CurrentPage != '') {
+            $currentPage = $request->CurrentPage;
+        }
+        else {
+            $currentPage = $this->currentPage;
+        }
+        if ($request->has('Filter') && $request->Filter != '') {
+            $filter = $request->Filter;
+        }
+        else {
+            $filter = $this->filter;
+        }
+
+        if ($sortDesc == 'true') {
+            $sortDirection = 'desc';
+        }
+        else {
+            $sortDirection = 'asc';
+        }
+
+        $result = $this->ItemService->getFood($sortBy, $sortDirection, $currentPage, $this->perPage, $filter);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * export staff
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function exportStaff(ItemRequest $request)
+    {
+        return Excel::download(new StaffExport, 'staff.xlsx');
     }
 }

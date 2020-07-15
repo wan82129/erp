@@ -8,12 +8,15 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" @click="initAddModal()">
                             新增
                         </button>
-                    </div>
-                    <div class="form-inline ml-auto">
-                        <input type="text" class="form-control" placeholder="請輸入關鍵字" v-model="filter">
-                        <button type="button" class="btn btn-success" @click="onFiltered()">
-                            搜尋
+                        <button type="button" class="btn btn-primary" @click="exportItem()" v-if="isExportItemApiReady">
+                            匯出
                         </button>
+                        <b-button variant="primary" disabled v-else>
+                            <b-spinner small></b-spinner>
+                        </b-button>
+                    </div>
+                    <div class="form-group ml-auto">
+                        <input type="text" class="form-control" placeholder="請輸入關鍵字" v-model="filter" @keyup.enter="onFiltered()">
                     </div>
                 </div>
                 <b-table striped hover :items="items" :fields="fields" :no-local-sorting="true" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @sort-changed="onSortChanged">
@@ -212,11 +215,13 @@
                 addItemUrl: '',
                 editItemUrl: '',
                 deleteItemUrl: '',
+                exportItemUrl: '',
                 getStaffAccessLevelUrl: '',
 
                 isTableReady: false,
                 isModalReady: false,
-                isItemApiReady: true
+                isItemApiReady: true,
+                isExportItemApiReady: true
             }
         },
         methods: {
@@ -243,6 +248,7 @@
                 this.addItemUrl = '/api/' + this.type;
                 this.editItemUrl = '/api/' + this.type;
                 this.deleteItemUrl = '/api/' + this.type;
+                this.exportItemUrl = '/api/' + this.type + '/export';
 
                 this.filter = ''
                 this.sortBy = 'Name';
@@ -579,6 +585,28 @@
                     self.perPage = response.data.data.perPage;
 
                     self.isTableReady = true;
+                }).catch(function (response) {
+                });
+            },
+            exportItem() {
+                this.isExportItemApiReady = false;
+
+                let filename = this.type + '.xlsx';
+                //下載
+                let self = this;
+                axios.request({
+                    method:'GET',
+                    url: this.exportItemUrl,      
+                    responseType: 'arraybuffer', 
+                }).then(function (response) {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', filename);
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+
+                    self.isExportItemApiReady = true;
                 }).catch(function (response) {
                 });
             },

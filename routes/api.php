@@ -22,6 +22,8 @@ Route::post('/staff', 'Item\ItemController@addStaff');
 Route::put('/staff', 'Item\ItemController@editStaff');
 Route::delete('/staff', 'Item\ItemController@deleteStaff');
 
+Route::get('/staff/export', 'Item\ItemController@exportStaff');
+
 Route::get('/staffAccessLevel', 'Item\ItemController@getStaffAccessLevel');
 
 Route::get('/room', 'Item\ItemController@getRoom');

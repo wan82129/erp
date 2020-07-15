@@ -145,4 +145,54 @@ class ItemService
 
         return $result;
     }
+
+    /**
+     * 取得staff後整理資料
+     */
+    public function getRoom($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        if ($sortDirection == 'desc') {
+            $sortDesc = true;
+        }
+        else {
+            $sortDesc = false;
+        }
+
+        $collection = collect([
+            'items' => collect(),
+            'sortBy' => $sortBy,
+            'sortDesc' => $sortDesc,
+            'currentPage' => $currentPage,
+            'perPage' => $this->perPage,
+            'totalRows' => 0,
+            'filter' => $filter
+        ]);
+
+        return $collection;
+    }
+
+    /**
+     * 取得staff後整理資料
+     */
+    public function getFood($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        if ($sortDirection == 'desc') {
+            $sortDesc = true;
+        }
+        else {
+            $sortDesc = false;
+        }
+
+        $collection = collect([
+            'items' => collect(),
+            'sortBy' => $sortBy,
+            'sortDesc' => $sortDesc,
+            'currentPage' => $currentPage,
+            'perPage' => $this->perPage,
+            'totalRows' => 0,
+            'filter' => $filter
+        ]);
+
+        return $collection;
+    }
 }
