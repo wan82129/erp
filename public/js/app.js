@@ -2168,11 +2168,17 @@ __webpack_require__.r(__webpack_exports__);
     return {
       type: '',
       fields: [],
+      //要顯示的標頭&排序
       items: [],
+      //資料集合
       defaultItem: {},
+      //預設的所有欄位、預設值、標籤名稱與排序
       item: {},
+      //新增或刪除使用的單筆空資料
       columnsExported: [],
+      //所有可匯出的欄位
       selectedColumnExported: [],
+      //選擇要匯出的欄位
       filter: '',
       sortBy: '',
       sortDesc: '',
@@ -2233,9 +2239,18 @@ __webpack_require__.r(__webpack_exports__);
 
       var self = this;
       axios.get(this.getItemMiscUrl).then(function (response) {
-        self.accessLevels = response.data.data.accessLevels;
-        self.fileTypes = response.data.data.fileTypes;
-        self.defaultItem = response.data.data.defaultItem; //初始化表格標頭
+        console.log(self.type);
+
+        if (self.type == self.GLOBAL.SERVICE_STAFF) {
+          self.accessLevels = response.data.data.accessLevels;
+          self.fileTypes = response.data.data.fileTypes;
+          self.defaultItem = response.data.data.defaultItem;
+        }
+
+        if (self.type == self.GLOBAL.SERVICE_ROOM) {}
+
+        if (self.type == self.GLOBAL.SERVICE_FOOD) {} //初始化表格標頭
+
 
         self.initFields(); //初始化匯出欄位
 
@@ -2260,7 +2275,7 @@ __webpack_require__.r(__webpack_exports__);
 
           this.columnsExported.push(tmp);
 
-          if (defaultItem.key == 'Code' || defaultItem.key == 'Name' || defaultItem.key == 'RealName' || defaultItem.key == 'NickName' || defaultItem.key == 'SerialNumber') {
+          if (defaultItem.key == 'Code' || defaultItem.key == 'Name' || defaultItem.key == 'RealName' || defaultItem.key == 'NickName' || defaultItem.key == 'SerialNumber' || defaultItem.key == 'AccessLevel') {
             //for表格標頭
             this.fields.push(tmp);
           }
@@ -2551,7 +2566,24 @@ __webpack_require__.r(__webpack_exports__);
       redirectToFoodUrl: '/item/' + this.GLOBAL.SERVICE_FOOD
     };
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    var self = this;
+    window.addEventListener('keyup', function (event) {
+      if (document.activeElement.matches('body')) {
+        if (event.keyCode == 83) {
+          self.$router.push(self.redirectToStaffUrl);
+        }
+
+        if (event.keyCode == 82) {
+          self.$router.push(self.redirectToRoomUrl);
+        }
+
+        if (event.keyCode == 70) {
+          self.$router.push(self.redirectToFoodUrl);
+        }
+      }
+    });
+  }
 });
 
 /***/ }),
@@ -80183,7 +80215,7 @@ var render = function() {
         _c(
           "router-link",
           { staticClass: "nav-link", attrs: { to: _vm.redirectToStaffUrl } },
-          [_vm._v("員工資料")]
+          [_vm._v("員工資料(S)")]
         )
       ],
       1
@@ -80196,7 +80228,7 @@ var render = function() {
         _c(
           "router-link",
           { staticClass: "nav-link", attrs: { to: _vm.redirectToRoomUrl } },
-          [_vm._v("包廂資料")]
+          [_vm._v("包廂資料(R)")]
         )
       ],
       1
@@ -80209,7 +80241,7 @@ var render = function() {
         _c(
           "router-link",
           { staticClass: "nav-link", attrs: { to: _vm.redirectToFoodUrl } },
-          [_vm._v("餐點資料")]
+          [_vm._v("餐點資料(F)")]
         )
       ],
       1

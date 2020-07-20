@@ -18,6 +18,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/staff/misc', 'Item\ItemController@getStaffMisc');
+Route::get('/room/misc', 'Item\ItemController@getRoomMisc');
+Route::get('/food/misc', 'Item\ItemController@getFoodMisc');
 
 Route::get('/staff', 'Item\ItemController@getStaff');
 Route::post('/staff', 'Item\ItemController@addStaff');

@@ -136,6 +136,30 @@ class ItemController extends Controller
     }
 
     /**
+     * get room misc
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function getRoomMisc(ItemRequest $request)
+    {
+        return new ItemResource(true);
+    }
+
+    /**
+     * get food misc
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function getFoodMisc(ItemRequest $request)
+    {
+        return new ItemResource(true);
+    }
+
+    /**
      * get item
      *
      * @param App\Http\Requests\Item\ItemRequest

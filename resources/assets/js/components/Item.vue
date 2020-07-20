@@ -238,12 +238,12 @@
             return {
                 type: '',
 
-                fields: [],
-                items: [],
-                defaultItem: {},
-                item: {},
-                columnsExported: [],
-                selectedColumnExported: [],
+                fields: [], //要顯示的標頭&排序
+                items: [], //資料集合
+                defaultItem: {}, //預設的所有欄位、預設值、標籤名稱與排序
+                item: {}, //新增或刪除使用的單筆空資料
+                columnsExported: [], //所有可匯出的欄位
+                selectedColumnExported: [], //選擇要匯出的欄位
 
                 filter: '',
                 sortBy: '',
@@ -252,8 +252,8 @@
                 currentPage: '',
                 perPage: '',
 
-                accessLevels: [],
-                fileTypes: [],
+                accessLevels: [], //staff 職務
+                fileTypes: [], //staff 檔別
 
                 headerTitle: '',
                 modalTitle: '',
@@ -308,9 +308,15 @@
                 //初始化預設欄位、表單
                 let self = this;
                 axios.get(this.getItemMiscUrl).then(function (response) {
-                    self.accessLevels = response.data.data.accessLevels;
-                    self.fileTypes = response.data.data.fileTypes;
-                    self.defaultItem = response.data.data.defaultItem;
+                    if (self.type == self.GLOBAL.SERVICE_STAFF) {
+                        self.accessLevels = response.data.data.accessLevels;
+                        self.fileTypes = response.data.data.fileTypes;
+                        self.defaultItem = response.data.data.defaultItem;
+                    } 
+                    if (self.type == self.GLOBAL.SERVICE_ROOM) {
+                    }
+                    if (self.type == self.GLOBAL.SERVICE_FOOD) {
+                    }
                     
                     //初始化表格標頭
                     self.initFields();
@@ -339,7 +345,12 @@
                         //for匯出
                         this.columnsExported.push(tmp);
 
-                        if (defaultItem.key == 'Code' || defaultItem.key == 'Name' || defaultItem.key == 'RealName' || defaultItem.key == 'NickName' || defaultItem.key == 'SerialNumber') {
+                        if (defaultItem.key == 'Code' || 
+                            defaultItem.key == 'Name' || 
+                            defaultItem.key == 'RealName' || 
+                            defaultItem.key == 'NickName' || 
+                            defaultItem.key == 'SerialNumber' ||
+                            defaultItem.key == 'AccessLevel') {
                             //for表格標頭
                             this.fields.push(tmp);
                         }
