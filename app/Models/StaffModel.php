@@ -9,16 +9,7 @@ class StaffModel extends Model
     protected $connection = 'mysql';
     protected $table = 'Staff';
     protected $primaryKey = 'Id';
-    protected $fillable = ['Code', 'Name', 'NickName', 'SerialNumber', 'AccessLevelId', 'Phone', 'Birthday', 'ContactAddress', 'ResidenceAddress', 'Note', 'IsActive', 'ArrivedDate', 'LeavedDate'];
+    protected $fillable = ['Code', 'Name', 'RealName', 'NickName', 'SerialNumber', 'AccessLevel', 'Phone', 'Birthday', 'ContactAddress', 'ResidenceAddress', 'Note', 'IsDisable', 'ArrivedDate', 'LeavedDate', 'Manager', 'FileType'];
 
     public $timestamps = false;
-    
-    public function StaffAccessLevel()
-    {
-        return $this->hasOne(
-            'App\Models\StaffAccessLevelModel',
-            'Id', //foreign
-            'AccessLevelId' //local
-        );
-    }
 }

@@ -35,37 +35,10 @@ class ItemRequest extends FormRequest
             }
             if (Route::current()->methods[0] == 'POST') {
                 return [
-                    'Code'=> 'required',
-                    'Name'=> 'required',
-                    'NickName'=> 'required',
-                    'SerialNumber'=> 'required',
-                    'AccessLevelId'=> 'required',
-                    'Phone'=> 'required',
-                    'Birthday'=> 'required',
-                    'ContactAddress' => 'required',
-                    'ResidenceAddress' => 'required',
-                    'Note' => 'required',
-                    'IsActive'=> 'required',
-                    'ArrivedDate' => 'required',
-                    'LeavedDate' => 'present'
                 ];
             }
             if (Route::current()->methods[0] == 'PUT') {
                 return [
-                    'Id' => 'required',
-                    'Code'=> 'required',
-                    'Name'=> 'required',
-                    'NickName'=> 'required',
-                    'SerialNumber'=> 'required',
-                    'AccessLevelId'=> 'required',
-                    'Phone'=> 'required',
-                    'Birthday'=> 'required',
-                    'ContactAddress' => 'required',
-                    'ResidenceAddress' => 'required',
-                    'Note' => 'required',
-                    'IsActive'=> 'required',
-                    'ArrivedDate' => 'required',
-                    'LeavedDate' => 'required'
                 ];
             }
             if (Route::current()->methods[0] == 'DELETE') {
@@ -73,11 +46,6 @@ class ItemRequest extends FormRequest
                     'Id' => 'required'
                 ];
             }
-        }
-
-        if (Route::current()->uri == 'api/staffAccessLevel') {
-            return [
-            ];
         }
 
         //default

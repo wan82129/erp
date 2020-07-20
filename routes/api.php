@@ -17,14 +17,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/staff/misc', 'Item\ItemController@getStaffMisc');
+
 Route::get('/staff', 'Item\ItemController@getStaff');
 Route::post('/staff', 'Item\ItemController@addStaff');
 Route::put('/staff', 'Item\ItemController@editStaff');
 Route::delete('/staff', 'Item\ItemController@deleteStaff');
 
-Route::get('/staff/export', 'Item\ItemController@exportStaff');
 
-Route::get('/staffAccessLevel', 'Item\ItemController@getStaffAccessLevel');
+Route::get('/staff/export', 'Item\ItemController@exportStaff');
 
 Route::get('/room', 'Item\ItemController@getRoom');
 Route::get('/food', 'Item\ItemController@getFood');

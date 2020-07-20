@@ -3,14 +3,12 @@
 namespace App\Repositories\Item;
 
 use App\Models\StaffModel;
-use App\Models\StaffAccessLevelModel;
 
 class ItemRepository
 {
-    public function __construct(StaffModel $staffModel, StaffAccessLevelModel $staffAccessLevelModel)
+    public function __construct(StaffModel $staffModel)
     {
         $this->StaffModel = $staffModel;
-        $this->StaffAccessLevelModel = $staffAccessLevelModel;
     }
 
     /**
@@ -22,11 +20,13 @@ class ItemRepository
         $filter = '%'.$filter.'%';
 
         $result = $this->StaffModel
-            ->with('StaffAccessLevel')
             ->where('Status', 'Use')
             ->where(function ($query) use ($filter) {
                 $query->where('Code', 'LIKE', $filter)
-                      ->orWhere('Name', 'LIKE', $filter);
+                      ->orWhere('Name', 'LIKE', $filter)
+                      ->orWhere('RealName', 'LIKE', $filter)
+                      ->orWhere('NickName', 'LIKE', $filter)
+                      ->orWhere('AccessLevel', 'LIKE', $filter);
             })
             ->orderBy($sortBy, $sortDirection)
             ->orderBy('UpdatedTime', 'DESC')
@@ -52,52 +52,58 @@ class ItemRepository
      * add staff
      *
      */
-    public function addStaff($code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $contact, $residence, $note, $isActive, $arrived, $leaved)
+    public function addStaff($staff)
     {
-        $staff = $this->StaffModel::create([
-            'Code' => $code,
-            'Name' => $name,
-            'NickName' => $nickName,
-            'SerialNumber' => $serialNumber,
-            'AccessLevelId' => $accessLevelId,
-            'Phone' => $phone,
-            'Birthday' => $birthday,
-            'ContactAddress' => $contact,
-            'ResidenceAddress' => $residence,
-            'Note' => $note,
-            'IsActive' => $isActive,
-            'ArrivedDate' => $arrived,
-            'LeavedDate' => $leaved
+        $result = $this->StaffModel::create([
+            'Code' => $staff['Code'],
+            'Name' => $staff['Name'],
+            'RealName' => $staff['RealName'],
+            'NickName' => $staff['NickName'],
+            'SerialNumber' => $staff['SerialNumber'],
+            'AccessLevel' => $staff['AccessLevel'],
+            'Phone' => $staff['Phone'],
+            'Birthday' => $staff['Birthday'],
+            'ContactAddress' => $staff['ContactAddress'],
+            'ResidenceAddress' => $staff['ResidenceAddress'],
+            'Note' => $staff['Note'],
+            'IsDisable' => $staff['IsDisable'],
+            'ArrivedDate' => $staff['ArrivedDate'],
+            'LeavedDate' => $staff['LeavedDate'],
+            'Manager' => $staff['Manager'],
+            'FileType' => $staff['FileType']
         ]);
 
-        return $staff;
+        return $result;
     }
 
     /**
      * edit staff
      *
      */
-    public function editStaff($id, $code, $name, $nickName, $serialNumber, $accessLevelId, $phone, $birthday, $contact, $residence, $note, $isActive, $arrived, $leaved)
+    public function editStaff($staff)
     {
-        $staff = $this->StaffModel::find($id);
+        $result = $this->StaffModel::find($staff['Id']);
 
-        $staff->Code = $code;
-        $staff->Name = $name;
-        $staff->NickName = $nickName;
-        $staff->SerialNumber = $serialNumber;
-        $staff->AccessLevelId = $accessLevelId;
-        $staff->Phone = $phone;
-        $staff->Birthday = $birthday;
-        $staff->ContactAddress = $contact;
-        $staff->ResidenceAddress = $residence;
-        $staff->Note = $note;
-        $staff->IsActive = $isActive;
-        $staff->ArrivedDate = $arrived;
-        $staff->LeavedDate = $leaved;
+        $result->Code = $staff['Code'];
+        $result->Name = $staff['Name'];
+        $result->RealName = $staff['RealName'];
+        $result->NickName = $staff['NickName'];
+        $result->SerialNumber = $staff['SerialNumber'];
+        $result->AccessLevel = $staff['AccessLevel'];
+        $result->Phone = $staff['Phone'];
+        $result->Birthday = $staff['Birthday'];
+        $result->ContactAddress = $staff['ContactAddress'];
+        $result->ResidenceAddress = $staff['ResidenceAddress'];
+        $result->Note = $staff['Note'];
+        $result->IsDisable = $staff['IsDisable'];
+        $result->ArrivedDate = $staff['ArrivedDate'];
+        $result->LeavedDate = $staff['LeavedDate'];
+        $result->Manager = $staff['Manager'];
+        $result->FileType = $staff['FileType'];
 
-        $staff->save();
+        $result->save();
 
-        return $staff;
+        return $result;
     }
 
     /**
@@ -113,16 +119,5 @@ class ItemRepository
         $staff->save();
 
         return $staff;
-    }
-
-    /**
-     * get staff access level
-     *
-     */
-    public function getStaffAccessLevel()
-    {
-        $result = $this->StaffAccessLevelModel::All();
-
-        return $result;
     }
 }

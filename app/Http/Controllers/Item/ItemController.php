@@ -87,21 +87,7 @@ class ItemController extends Controller
      */
     public function addStaff(ItemRequest $request)
     {
-        $result = $this->ItemService->addStaff(
-            $request->Code, 
-            $request->Name, 
-            $request->NickName,
-            $request->SerialNumber,
-            $request->AccessLevelId,
-            $request->Phone,
-            $request->Birthday,
-            $request->ContactAddress,
-            $request->ResidenceAddress,
-            $request->Note,
-            $request->IsActive,
-            $request->ArrivedDate,
-            $request->LeavedDate
-        );
+        $result = $this->ItemService->addStaff($request->Item);
         
         return new ItemResource($result);
     }
@@ -114,22 +100,7 @@ class ItemController extends Controller
      */
     public function editStaff(ItemRequest $request)
     {
-        $result = $this->ItemService->editStaff(
-            $request->Id,
-            $request->Code, 
-            $request->Name, 
-            $request->NickName,
-            $request->SerialNumber,
-            $request->AccessLevelId,
-            $request->Phone,
-            $request->Birthday,
-            $request->ContactAddress,
-            $request->ResidenceAddress,
-            $request->Note,
-            $request->IsActive,
-            $request->ArrivedDate,
-            $request->LeavedDate
-        );
+        $result = $this->ItemService->editStaff($request->Item);
         
         return new ItemResource($result);
     }
@@ -151,14 +122,15 @@ class ItemController extends Controller
     }
 
     /**
-     * get staff access level
+     * get staff misc
      *
      * @param App\Http\Requests\Item\ItemRequest
      * @return App\Http\Resources\Item\ItemResource
      */
-    public function getStaffAccessLevel(ItemRequest $request)
+    
+    public function getStaffMisc(ItemRequest $request)
     {
-        $result = $this->ItemService->getStaffAccessLevel();
+        $result = $this->ItemService->getStaffMisc();
         
         return new ItemResource($result);
     }
