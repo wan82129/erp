@@ -2163,6 +2163,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2186,7 +2192,9 @@ __webpack_require__.r(__webpack_exports__);
       currentPage: '',
       perPage: '',
       accessLevels: [],
+      //staff 職務
       fileTypes: [],
+      //staff 檔別
       headerTitle: '',
       modalTitle: '',
       modalActionAdd: 'add',
@@ -2208,7 +2216,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     init: function init() {
-      //跳窗載入完成
+      //表格載入完成
+      this.isTableReady = false; //跳窗載入完成
+
       this.isModalReady = false; //ITEM操作API按鈕是否可按
 
       this.isItemApiReady = true; //目前頁面種類，覺得title和取得資料的api
@@ -2239,8 +2249,6 @@ __webpack_require__.r(__webpack_exports__);
 
       var self = this;
       axios.get(this.getItemMiscUrl).then(function (response) {
-        console.log(self.type);
-
         if (self.type == self.GLOBAL.SERVICE_STAFF) {
           self.accessLevels = response.data.data.accessLevels;
           self.fileTypes = response.data.data.fileTypes;
@@ -2481,6 +2489,28 @@ __webpack_require__.r(__webpack_exports__);
         })["catch"](function (error) {});
       }
     },
+    nextItem: function nextItem() {
+      for (var i = 0; i <= this.items.length; ++i) {
+        if (this.item.Id == this.items[i].Id) {
+          if (i < this.items.length - 1) {
+            this.item = this.items[i + 1];
+          }
+
+          break;
+        }
+      }
+    },
+    previousItem: function previousItem() {
+      for (var i = 0; i <= this.items.length; ++i) {
+        if (this.item.Id == this.items[i].Id) {
+          if (i >= 1) {
+            this.item = this.items[i - 1];
+          }
+
+          break;
+        }
+      }
+    },
     getItems: function getItems() {
       //頁面載入完成
       this.isTableReady = false; //初始化資料
@@ -2530,6 +2560,18 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.init();
+    var self = this;
+    window.addEventListener('keyup', function (event) {
+      if (document.activeElement.matches('div#operateModal') && self.modalAction == self.modalActionEdit) {
+        if (event.keyCode == 33) {
+          self.previousItem();
+        }
+
+        if (event.keyCode == 34) {
+          self.nextItem();
+        }
+      }
+    });
   }
 });
 
@@ -79892,42 +79934,75 @@ var render = function() {
                     _vm.type === _vm.GLOBAL.SERVICE_FOOD ? _c("form") : _vm._e()
                   ]),
                   _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "modal-footer" },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-secondary",
-                          attrs: { type: "button", "data-dismiss": "modal" }
-                        },
-                        [_vm._v("取消")]
-                      ),
-                      _vm._v(" "),
-                      _vm.isItemApiReady
-                        ? _c(
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _vm.modalAction === _vm.modalActionEdit
+                      ? _c("div", { staticClass: "mr-auto" }, [
+                          _c(
                             "button",
                             {
-                              staticClass: "btn btn-primary",
+                              staticClass: "btn btn btn-link",
                               attrs: { type: "button" },
                               on: {
                                 click: function($event) {
-                                  return _vm.operateItem()
+                                  return _vm.previousItem()
                                 }
                               }
                             },
-                            [_vm._v("確認")]
+                            [_vm._v("上一筆(PageUp)")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn btn-link",
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.nextItem()
+                                }
+                              }
+                            },
+                            [_vm._v("下一筆(PageDown)")]
                           )
-                        : _c(
-                            "b-button",
-                            { attrs: { variant: "primary", disabled: "" } },
-                            [_c("b-spinner", { attrs: { small: "" } })],
-                            1
-                          )
-                    ],
-                    1
-                  )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            attrs: { type: "button", "data-dismiss": "modal" }
+                          },
+                          [_vm._v("取消")]
+                        ),
+                        _vm._v(" "),
+                        _vm.isItemApiReady
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.operateItem()
+                                  }
+                                }
+                              },
+                              [_vm._v("確認")]
+                            )
+                          : _c(
+                              "b-button",
+                              { attrs: { variant: "primary", disabled: "" } },
+                              [_c("b-spinner", { attrs: { small: "" } })],
+                              1
+                            )
+                      ],
+                      1
+                    )
+                  ])
                 ])
               : _c(
                   "div",

@@ -147,11 +147,17 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary" @click="operateItem()" v-if="isItemApiReady">確認</button>
-                            <b-button variant="primary" disabled v-else>
-                                <b-spinner small></b-spinner>
-                            </b-button>
+                            <div class="mr-auto" v-if="modalAction === modalActionEdit">
+                                <button type="button" class="btn btn btn-link" @click="previousItem()">上一筆(PageUp)</button>
+                                <button type="button" class="btn btn btn-link" @click="nextItem()">下一筆(PageDown)</button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" @click="operateItem()" v-if="isItemApiReady">確認</button>
+                                <b-button variant="primary" disabled v-else>
+                                    <b-spinner small></b-spinner>
+                                </b-button>
+                            </div>
                         </div>
                     </div>
                     <div class="d-flex justify-content-center m-3" v-else>
@@ -278,6 +284,8 @@
         },
         methods: {
             init() {
+                //表格載入完成
+                this.isTableReady = false;
                 //跳窗載入完成
                 this.isModalReady = false;
                 //ITEM操作API按鈕是否可按
@@ -589,6 +597,26 @@
                     });
                 }
             },
+            nextItem() {
+                for (let i = 0; i <= this.items.length; ++i) {
+                    if (this.item.Id == this.items[i].Id) {
+                        if (i < this.items.length - 1) {
+                            this.item = this.items[i + 1];
+                        }
+                        break;
+                    }
+                }
+            },
+            previousItem() {
+                for (let i = 0; i <= this.items.length; ++i) {
+                    if (this.item.Id == this.items[i].Id) {
+                        if (i >= 1) {
+                            this.item = this.items[i - 1];
+                        }
+                        break;
+                    }
+                }
+            },
             getItems() {
                 //頁面載入完成
                 this.isTableReady = false;
@@ -646,6 +674,18 @@
         },
         mounted() {
             this.init();
+
+            let self = this;
+            window.addEventListener('keyup', function(event) {
+                if (document.activeElement.matches('div#operateModal') && self.modalAction == self.modalActionEdit) {
+                    if (event.keyCode == 33) {
+                        self.previousItem();
+                    }
+                    if (event.keyCode == 34) { 
+                        self.nextItem();
+                    }
+                }
+            });
         }
     }
 </script>
