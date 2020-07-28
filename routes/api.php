@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/staff/misc', 'Item\ItemController@getStaffMisc');
+Route::get('/customer/misc', 'Item\ItemController@getCustomerMisc');
 Route::get('/room/misc', 'Item\ItemController@getRoomMisc');
 Route::get('/food/misc', 'Item\ItemController@getFoodMisc');
 
@@ -29,5 +30,6 @@ Route::delete('/staff', 'Item\ItemController@deleteStaff');
 
 Route::get('/staff/export', 'Item\ItemController@exportStaff');
 
+Route::get('/customer', 'Item\ItemController@getCustomer');
 Route::get('/room', 'Item\ItemController@getRoom');
 Route::get('/food', 'Item\ItemController@getFood');

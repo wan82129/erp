@@ -136,6 +136,18 @@ class ItemController extends Controller
     }
 
     /**
+     * get customer misc
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function getCustomerMisc(ItemRequest $request)
+    {
+        return new ItemResource(true);
+    }
+
+    /**
      * get room misc
      *
      * @param App\Http\Requests\Item\ItemRequest
@@ -157,6 +169,51 @@ class ItemController extends Controller
     public function getFoodMisc(ItemRequest $request)
     {
         return new ItemResource(true);
+    }
+
+    /**
+     * get item
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function getCustomer(ItemRequest $request)
+    {
+        if ($request->has('SortBy') && $request->SortBy != '') {
+            $sortBy = $request->SortBy;
+        }
+        else {
+            $sortBy = $this->sortBy;
+        }
+        if ($request->has('SortDesc') && $request->SortDesc != '') {
+            $sortDesc = $request->SortDesc;
+        }
+        else {
+            $sortDesc = $this->sortDesc;
+        }
+        if ($request->has('CurrentPage') && $request->CurrentPage != '') {
+            $currentPage = $request->CurrentPage;
+        }
+        else {
+            $currentPage = $this->currentPage;
+        }
+        if ($request->has('Filter') && $request->Filter != '') {
+            $filter = $request->Filter;
+        }
+        else {
+            $filter = $this->filter;
+        }
+
+        if ($sortDesc == 'true') {
+            $sortDirection = 'desc';
+        }
+        else {
+            $sortDirection = 'asc';
+        }
+
+        $result = $this->ItemService->getCustomer($sortBy, $sortDirection, $currentPage, $this->perPage, $filter);
+        
+        return new ItemResource($result);
     }
 
     /**
@@ -257,6 +314,6 @@ class ItemController extends Controller
      */
     public function exportStaff(ItemRequest $request)
     {
-        return Excel::download(new StaffExport, 'staff.xlsx');
+        return Excel::download(new StaffExport($request->Columns), 'staff.xlsx');
     }
 }

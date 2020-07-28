@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Item;
 
+use Carbon\Carbon;
+
 use App\Models\StaffModel;
 
 class ItemRepository
@@ -70,7 +72,22 @@ class ItemRepository
             'ArrivedDate' => $staff['ArrivedDate'],
             'LeavedDate' => $staff['LeavedDate'],
             'Manager' => $staff['Manager'],
-            'FileType' => $staff['FileType']
+            'FileType' => $staff['FileType'],
+            'UpdatedTime' => Carbon::now()->toDateString(),
+            'StaffSalaryType' => $staff['StaffSalaryType'],
+            'LadySalaryType' => $staff['LadySalaryType'],
+            'ShowColumn' => $staff['ShowColumn'],
+            'CardNumber' => $staff['CardNumber'],
+            'SalaryPerDay' => $staff['SalaryPerDay'],
+            'Liability' => $staff['Liability'],
+            'BarFeeType' => $staff['BarFeeType'],
+            'BrokerageFeePerDay' => $staff['BrokerageFeePerDay'],
+            'BrokerageFeePerSection' => $staff['BrokerageFeePerSection'],
+            'CleaningFee' => $staff['CleaningFee'],
+            'SectionPerDay' => $staff['SectionPerDay'],
+            'SectionCost1' => $staff['SectionCost1'],
+            'SectionCost2' => $staff['SectionCost2'],
+            'TakeBarFee' => $staff['TakeBarFee']
         ]);
 
         return $result;
@@ -100,6 +117,21 @@ class ItemRepository
         $result->LeavedDate = $staff['LeavedDate'];
         $result->Manager = $staff['Manager'];
         $result->FileType = $staff['FileType'];
+        $result->UpdatedTime = Carbon::now()->toDateString();
+        $result->StaffSalaryType = $staff['StaffSalaryType'];
+        $result->LadySalaryType = $staff['LadySalaryType'];
+        $result->ShowColumn = $staff['ShowColumn'];
+        $result->CardNumber = $staff['CardNumber'];
+        $result->SalaryPerDay = $staff['SalaryPerDay'];
+        $result->Liability = $staff['Liability'];
+        $result->BarFeeType = $staff['BarFeeType'];
+        $result->BrokerageFeePerDay = $staff['BrokerageFeePerDay'];
+        $result->BrokerageFeePerSection = $staff['BrokerageFeePerSection'];
+        $result->CleaningFee = $staff['CleaningFee'];
+        $result->SectionPerDay = $staff['SectionPerDay'];
+        $result->SectionCost1 = $staff['SectionCost1'];
+        $result->SectionCost2 = $staff['SectionCost2'];
+        $result->TakeBarFee = $staff['TakeBarFee'];
 
         $result->save();
 
@@ -115,6 +147,7 @@ class ItemRepository
         $staff = $this->StaffModel::find($id);
 
         $staff->Status = 'Delete';
+        $staff->UpdatedTime = Carbon::now()->toDateString();
 
         $staff->save();
 

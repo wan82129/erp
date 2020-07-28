@@ -39,6 +39,7 @@ const router = new VueRouter({
  */
 Vue.prototype.GLOBAL = {
     'SERVICE_STAFF': 'staff',
+    'SERVICE_CUSTOMER': 'customer',
     'SERVICE_ROOM': 'room',
     'SERVICE_FOOD': 'food',
 };

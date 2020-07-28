@@ -59,11 +59,11 @@
                             <form v-if="type === GLOBAL.SERVICE_STAFF">
                                 <div class="row">
                                     <div class="form-group col-md-2">
-                                        <label class="col-form-label">員工代號</label>
+                                        <label class="col-form-label">員工代號<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" v-model="item.Code">
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="col-form-label">員工名稱</label>
+                                        <label class="col-form-label">員工名稱<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" v-model="item.Name">
                                     </div>
                                     <div class="form-group col-md-3">
@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-2">
-                                        <label class="col-form-label">職務</label>
+                                        <label class="col-form-label">職務<span class="text-danger">*</span></label>
                                         <select class="form-control" v-model="item.AccessLevel">
                                             <option v-for="accessLevel in accessLevels" v-bind:value="accessLevel">{{ accessLevel }}</option>
                                         </select>
@@ -121,7 +121,7 @@
                                         <input type="text" class="form-control" v-model="item.Note">
                                     </div>
                                     <div class="form-group col-md-2">
-                                        <label class="col-form-label">下檔</label>
+                                        <label class="col-form-label">下檔<span class="text-danger">*</span></label>
                                         <select class="form-control" v-model="item.IsDisable">
                                             <option>是</option>
                                             <option>否</option>
@@ -132,14 +132,192 @@
                                         <input type="text" class="form-control" v-model="item.Manager">
                                     </div>
                                     <div class="form-group col-md-2">
-                                        <label class="col-form-label">檔別</label>
+                                        <label class="col-form-label">檔別<span class="text-danger">*</span></label>
                                         <select class="form-control" v-model="item.FileType">
                                             <option v-for="fileType in fileTypes" v-bind:value="fileType">{{ fileType }}</option>
                                         </select>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h5 class="font-weight-bold">薪水相關資料</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="col-form-label">幹部薪別</label>
+                                        <input type="text" class="form-control" v-model="item.StaffSalaryType">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-form-label">小姐薪別</label>
+                                        <input type="text" class="form-control" v-model="item.LadySalaryType">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-form-label">Show</label>
+                                        <input type="text" class="form-control" v-model="item.ShowColumn">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-form-label">卡號</label>
+                                        <input type="text" class="form-control" v-model="item.CardNumber">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">每日保薪 元/日</label>
+                                        <input type="text" class="form-control" v-model="item.SalaryPerDay">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">責任額 元/月</label>
+                                        <input type="text" class="form-control" v-model="item.Liability">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">檯費類別</label>
+                                        <input type="text" class="form-control" v-model="item.BarFeeType">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">經紀費 元/日</label>
+                                        <input type="text" class="form-control" v-model="item.BrokerageFeePerDay">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">經紀費 元/節</label>
+                                        <input type="text" class="form-control" v-model="item.BrokerageFeePerSection">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">清潔費 元/日</label>
+                                        <input type="text" class="form-control" v-model="item.CleaningFee">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">日回節數</label>
+                                        <input type="text" class="form-control" v-model="item.SectionPerDay">
+                                    </div>
+                                    <div class="form-group col-md-2 ">
+                                        <label class="col-form-label">節抽薪:1</label>
+                                        <input type="text" class="form-control" v-model="item.SectionCost1">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">節抽薪:2</label>
+                                        <input type="text" class="form-control" v-model="item.SectionCost2">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">帶檯費 元/節</label>
+                                        <input type="text" class="form-control" v-model="item.TakeBarFee">
+                                    </div>
+                                    <div class="form-group col-md-3 offset-md-1">
+                                        <label class="col-form-label">更動日期</label>
+                                        <input type="date" class="form-control" v-model="item.UpdatedTime" readonly>
+                                    </div>
+                                </div>
                             </form>
                             
+                            <form v-if="type === GLOBAL.SERVICE_CUSTOMER">
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">客戶編號</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">姓名</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="col-form-label">公司</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">生日</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">信用額度</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">開發票</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">發票檯頭</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-form-label">發票地址</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="col-form-label">收款地址</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">聯絡人</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">統一編號</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">電話號碼</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-form-label">備註</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">放單日</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">收款日</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">清帳方式</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">前更動日</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">最後更動日</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">最後消費日期</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">業績幹部1</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">業績幹部2</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">客戶類別</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </form>
+
                             <form v-if="type === GLOBAL.SERVICE_ROOM">
                             </form>
 
@@ -296,11 +474,14 @@
                 if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.headerTitle = '員工資料';
                 } 
+                if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+                    this.headerTitle = '客戶資料';
+                } 
                 if (this.type == this.GLOBAL.SERVICE_ROOM) {
                     this.headerTitle = '包廂資料';
                 }
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
-                    this.headerTitle = '餐點資料';
+                    this.headerTitle = '貨品資料';
                 }
                 this.addItemUrl = '/api/' + this.type;
                 this.editItemUrl = '/api/' + this.type;
@@ -321,6 +502,8 @@
                         self.fileTypes = response.data.data.fileTypes;
                         self.defaultItem = response.data.data.defaultItem;
                     } 
+                    if (self.type == self.GLOBAL.SERVICE_CUSTOMER) {
+                    }
                     if (self.type == self.GLOBAL.SERVICE_ROOM) {
                     }
                     if (self.type == self.GLOBAL.SERVICE_FOOD) {
@@ -369,6 +552,8 @@
                         sortable: false
                     });
                 }
+                if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+                }
                 if (this.type == this.GLOBAL.SERVICE_ROOM) {
                 }
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
@@ -415,6 +600,12 @@
                     this.isModalReady = true;
                 }
                 
+                if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+                    this.modalTitle += '客戶';
+
+                    this.isModalReady = true;
+                }
+
                 if (this.type == this.GLOBAL.SERVICE_ROOM) {
                     this.modalTitle += '包廂';
 
@@ -422,7 +613,7 @@
                 }
                 
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
-                    this.modalTitle += '餐點';
+                    this.modalTitle += '貨品';
 
                     this.isModalReady = true;
                 }
@@ -470,6 +661,13 @@
 
                     this.isModalReady = true;
                 }
+                
+                if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+                    this.modalTitle += '客戶';
+
+                    this.isModalReady = true;
+                }
+
                 if (this.type == this.GLOBAL.SERVICE_ROOM) {
                     this.modalTitle += '包廂';
 
@@ -477,7 +675,7 @@
                 }
                 
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
-                    this.modalTitle += '餐點';
+                    this.modalTitle += '貨品';
 
                     this.isModalReady = true;
                 }
@@ -508,7 +706,6 @@
                 }
             },
             onFiltered() {
-                console.log(this.filter);
                 this.getItems();
             },
             operateItem() {
@@ -584,6 +781,9 @@
                         method:'GET',
                         url: this.exportItemUrl,      
                         responseType: 'arraybuffer', 
+                        params: {
+                            Columns: this.selectedColumnExported
+                        }
                     }).then(function (response) {
                         self.$refs['exportModalClose'].click();
 
@@ -657,7 +857,6 @@
             },
             onSortChanged(e) {
                 if (e.sortBy == '') {
-                    console.log(this.sortBy);
                     return;
                 }
 

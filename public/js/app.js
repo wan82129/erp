@@ -2169,6 +2169,184 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2229,12 +2407,16 @@ __webpack_require__.r(__webpack_exports__);
         this.headerTitle = '員工資料';
       }
 
+      if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+        this.headerTitle = '客戶資料';
+      }
+
       if (this.type == this.GLOBAL.SERVICE_ROOM) {
         this.headerTitle = '包廂資料';
       }
 
       if (this.type == this.GLOBAL.SERVICE_FOOD) {
-        this.headerTitle = '餐點資料';
+        this.headerTitle = '貨品資料';
       }
 
       this.addItemUrl = '/api/' + this.type;
@@ -2254,6 +2436,8 @@ __webpack_require__.r(__webpack_exports__);
           self.fileTypes = response.data.data.fileTypes;
           self.defaultItem = response.data.data.defaultItem;
         }
+
+        if (self.type == self.GLOBAL.SERVICE_CUSTOMER) {}
 
         if (self.type == self.GLOBAL.SERVICE_ROOM) {}
 
@@ -2296,6 +2480,8 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
 
+      if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {}
+
       if (this.type == this.GLOBAL.SERVICE_ROOM) {}
 
       if (this.type == this.GLOBAL.SERVICE_FOOD) {}
@@ -2335,13 +2521,18 @@ __webpack_require__.r(__webpack_exports__);
         this.isModalReady = true;
       }
 
+      if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+        this.modalTitle += '客戶';
+        this.isModalReady = true;
+      }
+
       if (this.type == this.GLOBAL.SERVICE_ROOM) {
         this.modalTitle += '包廂';
         this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_FOOD) {
-        this.modalTitle += '餐點';
+        this.modalTitle += '貨品';
         this.isModalReady = true;
       }
     },
@@ -2379,13 +2570,18 @@ __webpack_require__.r(__webpack_exports__);
         this.isModalReady = true;
       }
 
+      if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+        this.modalTitle += '客戶';
+        this.isModalReady = true;
+      }
+
       if (this.type == this.GLOBAL.SERVICE_ROOM) {
         this.modalTitle += '包廂';
         this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_FOOD) {
-        this.modalTitle += '餐點';
+        this.modalTitle += '貨品';
         this.isModalReady = true;
       }
     },
@@ -2409,7 +2605,6 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     onFiltered: function onFiltered() {
-      console.log(this.filter);
       this.getItems();
     },
     operateItem: function operateItem() {
@@ -2477,7 +2672,10 @@ __webpack_require__.r(__webpack_exports__);
         axios.request({
           method: 'GET',
           url: this.exportItemUrl,
-          responseType: 'arraybuffer'
+          responseType: 'arraybuffer',
+          params: {
+            Columns: this.selectedColumnExported
+          }
         }).then(function (response) {
           self.$refs['exportModalClose'].click();
           var url = window.URL.createObjectURL(new Blob([response.data]));
@@ -2544,7 +2742,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     onSortChanged: function onSortChanged(e) {
       if (e.sortBy == '') {
-        console.log(this.sortBy);
         return;
       }
 
@@ -2600,10 +2797,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      redirectToSystemParameterUrl: '',
       redirectToStaffUrl: '/item/' + this.GLOBAL.SERVICE_STAFF,
+      redirectToCustomerUrl: '/item/' + this.GLOBAL.SERVICE_CUSTOMER,
       redirectToRoomUrl: '/item/' + this.GLOBAL.SERVICE_ROOM,
       redirectToFoodUrl: '/item/' + this.GLOBAL.SERVICE_FOOD
     };
@@ -2614,6 +2819,10 @@ __webpack_require__.r(__webpack_exports__);
       if (document.activeElement.matches('body')) {
         if (event.keyCode == 83) {
           self.$router.push(self.redirectToStaffUrl);
+        }
+
+        if (event.keyCode == 67) {
+          self.$router.push(self.redirectToCustomerUrl);
         }
 
         if (event.keyCode == 82) {
@@ -79351,9 +79560,7 @@ var render = function() {
                       ? _c("form", [
                           _c("div", { staticClass: "row" }, [
                             _c("div", { staticClass: "form-group col-md-2" }, [
-                              _c("label", { staticClass: "col-form-label" }, [
-                                _vm._v("員工代號")
-                              ]),
+                              _vm._m(0),
                               _vm._v(" "),
                               _c("input", {
                                 directives: [
@@ -79383,9 +79590,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "form-group col-md-4" }, [
-                              _c("label", { staticClass: "col-form-label" }, [
-                                _vm._v("員工名稱")
-                              ]),
+                              _vm._m(1),
                               _vm._v(" "),
                               _c("input", {
                                 directives: [
@@ -79481,9 +79686,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("div", { staticClass: "row" }, [
                             _c("div", { staticClass: "form-group col-md-2" }, [
-                              _c("label", { staticClass: "col-form-label" }, [
-                                _vm._v("職務")
-                              ]),
+                              _vm._m(2),
                               _vm._v(" "),
                               _c(
                                 "select",
@@ -79794,9 +79997,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "form-group col-md-2" }, [
-                              _c("label", { staticClass: "col-form-label" }, [
-                                _vm._v("下檔")
-                              ]),
+                              _vm._m(3),
                               _vm._v(" "),
                               _c(
                                 "select",
@@ -79874,9 +80075,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "form-group col-md-2" }, [
-                              _c("label", { staticClass: "col-form-label" }, [
-                                _vm._v("檔別")
-                              ]),
+                              _vm._m(4),
                               _vm._v(" "),
                               _c(
                                 "select",
@@ -79923,7 +80122,525 @@ var render = function() {
                                 0
                               )
                             ])
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(5),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-3" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("幹部薪別")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.StaffSalaryType,
+                                    expression: "item.StaffSalaryType"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.StaffSalaryType },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "StaffSalaryType",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-3" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("小姐薪別")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.LadySalaryType,
+                                    expression: "item.LadySalaryType"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.LadySalaryType },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "LadySalaryType",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-3" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("Show")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.ShowColumn,
+                                    expression: "item.ShowColumn"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.ShowColumn },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "ShowColumn",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-3" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("卡號")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.CardNumber,
+                                    expression: "item.CardNumber"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.CardNumber },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "CardNumber",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("每日保薪 元/日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.SalaryPerDay,
+                                    expression: "item.SalaryPerDay"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.SalaryPerDay },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "SalaryPerDay",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("責任額 元/月")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Liability,
+                                    expression: "item.Liability"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Liability },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Liability",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("檯費類別")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.BarFeeType,
+                                    expression: "item.BarFeeType"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.BarFeeType },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "BarFeeType",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("經紀費 元/日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.BrokerageFeePerDay,
+                                    expression: "item.BrokerageFeePerDay"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: {
+                                  value: _vm.item.BrokerageFeePerDay
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "BrokerageFeePerDay",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("經紀費 元/節")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.BrokerageFeePerSection,
+                                    expression: "item.BrokerageFeePerSection"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: {
+                                  value: _vm.item.BrokerageFeePerSection
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "BrokerageFeePerSection",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("清潔費 元/日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.CleaningFee,
+                                    expression: "item.CleaningFee"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.CleaningFee },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "CleaningFee",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("日回節數")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.SectionPerDay,
+                                    expression: "item.SectionPerDay"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.SectionPerDay },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "SectionPerDay",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2 " }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("節抽薪:1")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.SectionCost1,
+                                    expression: "item.SectionCost1"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.SectionCost1 },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "SectionCost1",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("節抽薪:2")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.SectionCost2,
+                                    expression: "item.SectionCost2"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.SectionCost2 },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "SectionCost2",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("帶檯費 元/節")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.TakeBarFee,
+                                    expression: "item.TakeBarFee"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.TakeBarFee },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "TakeBarFee",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "form-group col-md-3 offset-md-1"
+                              },
+                              [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("更動日期")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.UpdatedTime,
+                                      expression: "item.UpdatedTime"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "date", readonly: "" },
+                                  domProps: { value: _vm.item.UpdatedTime },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "UpdatedTime",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]
+                            )
                           ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.type === _vm.GLOBAL.SERVICE_CUSTOMER
+                      ? _c("form", [
+                          _vm._m(6),
+                          _vm._v(" "),
+                          _vm._m(7),
+                          _vm._v(" "),
+                          _vm._m(8),
+                          _vm._v(" "),
+                          _vm._m(9),
+                          _vm._v(" "),
+                          _vm._m(10),
+                          _vm._v(" "),
+                          _vm._m(11),
+                          _vm._v(" "),
+                          _vm._m(12),
+                          _vm._v(" "),
+                          _vm._m(13)
                         ])
                       : _vm._e(),
                     _vm._v(" "),
@@ -80260,7 +80977,245 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("員工代號"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("員工名稱"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("職務"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("下檔"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("檔別"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("h5", { staticClass: "font-weight-bold" }, [_vm._v("薪水相關資料")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-2" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("客戶編號")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("姓名")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-6" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("公司")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("生日")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-2" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("信用額度")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-2" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("開發票")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("發票檯頭")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-6" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("發票地址")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-6" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("收款地址")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("聯絡人")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("統一編號")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("電話號碼")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-6" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("備註")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("放單日")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("收款日")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("清帳方式")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("前更動日")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("最後更動日")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [
+          _vm._v("最後消費日期")
+        ]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("業績幹部1")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("業績幹部2")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group col-md-4" }, [
+        _c("label", { staticClass: "col-form-label" }, [_vm._v("客戶類別")]),
+        _vm._v(" "),
+        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -80289,8 +81244,37 @@ var render = function() {
       [
         _c(
           "router-link",
+          {
+            staticClass: "nav-link",
+            attrs: { to: _vm.redirectToSystemParameterUrl }
+          },
+          [_vm._v("系統參數(P)")]
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "li",
+      { staticClass: "nav-item" },
+      [
+        _c(
+          "router-link",
           { staticClass: "nav-link", attrs: { to: _vm.redirectToStaffUrl } },
           [_vm._v("員工資料(S)")]
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "li",
+      { staticClass: "nav-item" },
+      [
+        _c(
+          "router-link",
+          { staticClass: "nav-link", attrs: { to: _vm.redirectToCustomerUrl } },
+          [_vm._v("客戶資料(C)")]
         )
       ],
       1
@@ -80316,7 +81300,7 @@ var render = function() {
         _c(
           "router-link",
           { staticClass: "nav-link", attrs: { to: _vm.redirectToFoodUrl } },
-          [_vm._v("餐點資料(F)")]
+          [_vm._v("貨品資料(F)")]
         )
       ],
       1
@@ -95566,6 +96550,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 
 Vue.prototype.GLOBAL = {
   'SERVICE_STAFF': 'staff',
+  'SERVICE_CUSTOMER': 'customer',
   'SERVICE_ROOM': 'room',
   'SERVICE_FOOD': 'food'
 };

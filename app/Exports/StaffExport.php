@@ -7,8 +7,14 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 
 class StaffExport implements FromCollection
 {
+    protected $columns;
+
+    public function __construct($columns) {
+        $this->columns = $columns;
+    }
+
     public function collection()
     {
-        return StaffModel::all();
+        return StaffModel::select($this->columns)->get();
     }
 }

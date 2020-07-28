@@ -31,13 +31,7 @@ class ItemService
         }
 
         $result = $staffs->transform(function($item, $key) {
-            if ($item['IsDisable'] == 1) {
-                $item['IsDisable'] = '是';
-            }
-            else {
-                $item['IsDisable'] = '否';
-            }
-            return [
+            /*return [
                 'Id' => $item['Id'],
                 'Code' => $item['Code'],
                 'Name' => $item['Name'],
@@ -54,8 +48,10 @@ class ItemService
                 'ArrivedDate' => $item['ArrivedDate'],
                 'LeavedDate' => $item['LeavedDate'],
                 'Manager' => $item['Manager'],
-                'FileType' => $item['FileType']
-            ];
+                'FileType' => $item['FileType'],
+                'UpdatedTime' => $item['UpdatedTime']
+            ];*/
+            return $item;
         });
 
         if ($sortDirection == 'desc') {
@@ -83,13 +79,6 @@ class ItemService
      */
     public function addStaff($staff)
     {
-        if ($staff['IsDisable'] == '是') {
-            $staff['IsDisable'] = '1';
-        }
-        else {
-            $staff['IsDisable'] = '0';
-        }
-
         $result = $this->ItemRepository->addStaff($staff);
 
         //驗證是否新增成功
@@ -106,13 +95,6 @@ class ItemService
      */
     public function editStaff($staff)
     {
-        if ($staff['IsDisable'] == '是') {
-            $staff['IsDisable'] = '1';
-        }
-        else {
-            $staff['IsDisable'] = '0';
-        }
-
         $result = $this->ItemRepository->editStaff($staff);
 
         //驗證是否編輯成功
@@ -168,7 +150,7 @@ class ItemService
             [
                 'key' => 'RealName',
                 'default' => '',
-                'label' => '本名',
+                'label' => '小姐本名',
                 'sortable' => false
             ],
             [
@@ -249,6 +231,96 @@ class ItemService
                 'label' => '檔別',
                 'sortable' => false
             ],
+            [
+                'key' => 'UpdatedTime',
+                'default' => '',
+                'label' => '更動日',
+                'sortable' => false
+            ],
+            [
+                'key' => 'StaffSalaryType',
+                'default' => '',
+                'label' => '幹部薪別',
+                'sortable' => false
+            ],
+            [
+                'key' => 'LadySalaryType',
+                'default' => '',
+                'label' => '小姐薪別',
+                'sortable' => true
+            ],
+            [
+                'key' => 'ShowColumn',
+                'default' => '',
+                'label' => 'Show',
+                'sortable' => true
+            ],
+            [
+                'key' => 'CardNumber',
+                'default' => '',
+                'label' => '卡號',
+                'sortable' => false
+            ],
+            [
+                'key' => 'SalaryPerDay',
+                'default' => '',
+                'label' => '每日保薪',
+                'sortable' => false
+            ],
+            [
+                'key' => 'Liability',
+                'default' => '',
+                'label' => '責任額',
+                'sortable' => false
+            ],
+            [
+                'key' => 'BarFeeType',
+                'default' => '',
+                'label' => '檯費類別',
+                'sortable' => false
+            ],
+            [
+                'key' => 'BrokerageFeePerDay',
+                'default' => '',
+                'label' => '經紀費 元/日',
+                'sortable' => false
+            ],
+            [
+                'key' => 'BrokerageFeePerSection',
+                'default' => '',
+                'label' => '經紀費 元/節',
+                'sortable' => false
+            ],
+            [
+                'key' => 'CleaningFee',
+                'default' => '',
+                'label' => '清潔費',
+                'sortable' => false
+            ],
+            [
+                'key' => 'SectionPerDay',
+                'default' => '',
+                'label' => '日回節數',
+                'sortable' => false
+            ],
+            [
+                'key' => 'SectionCost1',
+                'default' => '',
+                'label' => '節抽薪1',
+                'sortable' => false
+            ],
+            [
+                'key' => 'SectionCost2',
+                'default' => '',
+                'label' => '節抽薪2',
+                'sortable' => false
+            ],
+            [
+                'key' => 'TakeBarFee',
+                'default' => '',
+                'label' => '帶檯費',
+                'sortable' => false
+            ]
         ];
 
         $collection = collect([
@@ -261,7 +333,32 @@ class ItemService
     }
 
     /**
-     * 取得staff後整理資料
+     * 取得customer後整理資料
+     */
+    public function getCustomer($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        if ($sortDirection == 'desc') {
+            $sortDesc = true;
+        }
+        else {
+            $sortDesc = false;
+        }
+
+        $collection = collect([
+            'items' => collect(),
+            'sortBy' => $sortBy,
+            'sortDesc' => $sortDesc,
+            'currentPage' => $currentPage,
+            'perPage' => $this->perPage,
+            'totalRows' => 0,
+            'filter' => $filter
+        ]);
+
+        return $collection;
+    }
+
+    /**
+     * 取得room後整理資料
      */
     public function getRoom($sortBy, $sortDirection, $currentPage, $perPage, $filter)
     {
@@ -286,7 +383,7 @@ class ItemService
     }
 
     /**
-     * 取得staff後整理資料
+     * 取得food後整理資料
      */
     public function getFood($sortBy, $sortDirection, $currentPage, $perPage, $filter)
     {
