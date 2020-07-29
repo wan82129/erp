@@ -5,12 +5,14 @@ namespace App\Repositories\Item;
 use Carbon\Carbon;
 
 use App\Models\StaffModel;
+use App\Models\CustomerModel;
 
 class ItemRepository
 {
-    public function __construct(StaffModel $staffModel)
+    public function __construct(StaffModel $staffModel, CustomerModel $customerModel)
     {
         $this->StaffModel = $staffModel;
+        $this->CustomerModel = $customerModel;
     }
 
     /**
@@ -56,39 +58,7 @@ class ItemRepository
      */
     public function addStaff($staff)
     {
-        $result = $this->StaffModel::create([
-            'Code' => $staff['Code'],
-            'Name' => $staff['Name'],
-            'RealName' => $staff['RealName'],
-            'NickName' => $staff['NickName'],
-            'SerialNumber' => $staff['SerialNumber'],
-            'AccessLevel' => $staff['AccessLevel'],
-            'Phone' => $staff['Phone'],
-            'Birthday' => $staff['Birthday'],
-            'ContactAddress' => $staff['ContactAddress'],
-            'ResidenceAddress' => $staff['ResidenceAddress'],
-            'Note' => $staff['Note'],
-            'IsDisable' => $staff['IsDisable'],
-            'ArrivedDate' => $staff['ArrivedDate'],
-            'LeavedDate' => $staff['LeavedDate'],
-            'Manager' => $staff['Manager'],
-            'FileType' => $staff['FileType'],
-            'UpdatedTime' => Carbon::now()->toDateString(),
-            'StaffSalaryType' => $staff['StaffSalaryType'],
-            'LadySalaryType' => $staff['LadySalaryType'],
-            'ShowColumn' => $staff['ShowColumn'],
-            'CardNumber' => $staff['CardNumber'],
-            'SalaryPerDay' => $staff['SalaryPerDay'],
-            'Liability' => $staff['Liability'],
-            'BarFeeType' => $staff['BarFeeType'],
-            'BrokerageFeePerDay' => $staff['BrokerageFeePerDay'],
-            'BrokerageFeePerSection' => $staff['BrokerageFeePerSection'],
-            'CleaningFee' => $staff['CleaningFee'],
-            'SectionPerDay' => $staff['SectionPerDay'],
-            'SectionCost1' => $staff['SectionCost1'],
-            'SectionCost2' => $staff['SectionCost2'],
-            'TakeBarFee' => $staff['TakeBarFee']
-        ]);
+        $result = $this->StaffModel::create($staff);
 
         return $result;
     }
@@ -139,7 +109,7 @@ class ItemRepository
     }
 
     /**
-     * edit staff
+     * delete staff
      *
      */
     public function deleteStaff($id)
@@ -150,6 +120,114 @@ class ItemRepository
         $staff->UpdatedTime = Carbon::now()->toDateString();
 
         $staff->save();
+
+        return $staff;
+    }
+
+    /**
+     * get customer
+     *
+     */
+    public function getCustomer($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        $filter = '%'.$filter.'%';
+
+        $result = $this->CustomerModel
+            ->where('Status', 'Use')
+            ->where(function ($query) use ($filter) {
+                $query->where('Code', 'LIKE', $filter)
+                      ->orWhere('Name', 'LIKE', $filter);
+            })
+            ->orderBy($sortBy, $sortDirection)
+            ->orderBy('UpdatedTime', 'DESC')
+            ->skip(($currentPage - 1) * $perPage)->take($perPage)
+            ->get();
+
+        return $result;
+    }
+
+    /**
+     * get staff count
+     *
+     */
+    public function getCustomerCount()
+    {
+        $result = $this->CustomerModel::count();
+
+        return $result;
+    }
+
+    /**
+     * add customer
+     *
+     */
+    public function addCustomer($customer)
+    {
+        $result = $this->CustomerModel::create($customer);
+
+        return $result;
+    }
+
+    /**
+     * edit customer
+     *
+     */
+    public function editCustomer($customer)
+    {
+        $result = $this->CustomerModel::find($customer['Id']);
+
+        $result->Code = $customer['Code'];
+        $result->Name = $customer['Name'];
+        $result->Birthday = $customer['Birthday'];
+        $result->Credit = $customer['Credit'];
+        $result->Company = $customer['Company'];
+        $result->IsOpenReceipt = $customer['IsOpenReceipt'];
+        $result->ReceiptTitle = $customer['ReceiptTitle'];
+        $result->ReceiptAddress = $customer['ReceiptAddress'];
+        $result->GetPaidAddress = $customer['GetPaidAddress'];
+        $result->Contactor = $customer['Contactor'];
+        $result->TaxNumber = $customer['TaxNumber'];
+        $result->Phone = $customer['Phone'];
+        $result->Note = $customer['Note'];
+        $result->ReleaseOrderDate = $customer['ReleaseOrderDate'];
+        $result->GetPaidDate = $customer['GetPaidDate'];
+        $result->ClearLog = $customer['ClearLog'];
+        $result->PreUpdatedTime = $customer['UpdatedTime'];
+        $result->UpdatedTime = Carbon::now()->toDateString();
+        $result->LatestConsumpDate = $customer['LatestConsumpDate'];
+        $result->StaffCode  = $customer['StaffCode'];
+        $result->CustomerType = $customer['CustomerType'];
+
+        $result->save();
+
+        return $result;
+    }
+
+    /**
+     * delete customer
+     *
+     */
+    public function deleteCustomer($id)
+    {
+        $customer = $this->CustomerModel::find($id);
+
+        $customer->Status = 'Delete';
+        $customer->PreUpdatedTime = $customer->UpdatedTime;
+        $customer->UpdatedTime = Carbon::now()->toDateString();
+
+        $customer->save();
+
+        return $customer;
+    }
+
+    /**
+     * get staff by code
+     */
+    public function getStaffByCode($code)
+    {
+        $staff = $this->StaffModel
+            ->where('Code', $code)
+            ->first();
 
         return $staff;
     }

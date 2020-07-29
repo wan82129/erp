@@ -214,106 +214,109 @@
                             <form v-if="type === GLOBAL.SERVICE_CUSTOMER">
                                 <div class="row">
                                     <div class="form-group col-md-2">
-                                        <label class="col-form-label">客戶編號</label>
-                                        <input type="text" class="form-control">
+                                        <label class="col-form-label">客戶編號<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Code">
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="col-form-label">姓名</label>
-                                        <input type="text" class="form-control">
+                                        <label class="col-form-label">姓名<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Name">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label">公司</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.Company">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">生日</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" v-model="item.Birthday">
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label class="col-form-label">信用額度</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.Credit">
                                     </div>
                                     <div class="form-group col-md-2">
-                                        <label class="col-form-label">開發票</label>
-                                        <input type="text" class="form-control">
+                                        <label class="col-form-label">開發票<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsOpenReceipt">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">發票檯頭</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.ReceiptTitle">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label">發票地址</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.ReceiptAddress">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label">收款地址</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.GetPaidAddress">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">聯絡人</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.Contactor">
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">統一編號</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.TaxNumber">
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">電話號碼</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.Phone">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label">備註</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.Note">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">放單日</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" v-model="item.ReleaseOrderDate">
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">收款日</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" v-model="item.GetPaidDate">
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">清帳方式</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.ClearLog">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">前更動日</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" v-model="item.PreUpdatedTime" readonly>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">最後更動日</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" v-model="item.UpdatedTime" readonly>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-form-label">最後消費日期</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" v-model="item.LatestConsumpDate">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-md-4">
-                                        <label class="col-form-label">業績幹部1</label>
-                                        <input type="text" class="form-control">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">業績幹部<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.StaffCode" @input="onInputGetStaffName">
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="col-form-label">業績幹部2</label>
-                                        <input type="text" class="form-control">
+                                        <label class="col-form-label">業績幹部<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="customerStaffName" readonly>
                                     </div>
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-4 offset-md-2">
                                         <label class="col-form-label">客戶類別</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="item.CustomerType">
                                     </div>
                                 </div>
                             </form>
@@ -356,19 +359,11 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form v-if="type === GLOBAL.SERVICE_STAFF">
-                                <b-form-group label="請選擇要匯出的欄位">
-                                    <b-form-checkbox-group v-model="selectedColumnExported">
-                                        <b-form-checkbox v-for="columnExported in columnsExported" v-bind:value="columnExported.key">{{ columnExported.label }}</b-form-checkbox>
-                                    </b-form-checkbox-group>
-                                </b-form-group>
-                            </form>
-                            
-                            <form v-if="type === GLOBAL.SERVICE_ROOM">
-                            </form>
-
-                            <form v-if="type === GLOBAL.SERVICE_FOOD">
-                            </form>
+                            <b-form-group label="請選擇要匯出的欄位">
+                                <b-form-checkbox-group v-model="selectedColumnExported">
+                                    <b-form-checkbox v-for="columnExported in columnsExported" v-bind:value="columnExported.key">{{ columnExported.label }}</b-form-checkbox>
+                                </b-form-checkbox-group>
+                            </b-form-group>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
@@ -438,6 +433,7 @@
 
                 accessLevels: [], //staff 職務
                 fileTypes: [], //staff 檔別
+                customerStaffName: '', //客戶的業績幹部
 
                 headerTitle: '',
                 modalTitle: '',
@@ -453,6 +449,7 @@
                 deleteItemUrl: '',
                 exportItemUrl: '',
                 getItemMiscUrl: '',
+                getCustomerStaffNameUrl: '',
 
                 isTableReady: false,
                 isModalReady: false,
@@ -500,7 +497,6 @@
                     if (self.type == self.GLOBAL.SERVICE_STAFF) {
                         self.accessLevels = response.data.data.accessLevels;
                         self.fileTypes = response.data.data.fileTypes;
-                        self.defaultItem = response.data.data.defaultItem;
                     } 
                     if (self.type == self.GLOBAL.SERVICE_CUSTOMER) {
                     }
@@ -508,6 +504,8 @@
                     }
                     if (self.type == self.GLOBAL.SERVICE_FOOD) {
                     }
+
+                    self.defaultItem = response.data.data.defaultItem;
                     
                     //初始化表格標頭
                     self.initFields();
@@ -523,34 +521,6 @@
                 this.columnsExported = [];
                 this.fields = [];
                 if (this.type == this.GLOBAL.SERVICE_STAFF) {
-                    //從1開始是因為第0個欄位是id，這裡不需要
-                    for (let i = 1; i < this.defaultItem.length; ++i) {
-                        let defaultItem = this.defaultItem[i];
-
-                        let tmp = {
-                            key: defaultItem.key,
-                            label: defaultItem.label,
-                            sortable: defaultItem.sortable
-                        };
-
-                        //for匯出
-                        this.columnsExported.push(tmp);
-
-                        if (defaultItem.key == 'Code' || 
-                            defaultItem.key == 'Name' || 
-                            defaultItem.key == 'RealName' || 
-                            defaultItem.key == 'NickName' || 
-                            defaultItem.key == 'SerialNumber' ||
-                            defaultItem.key == 'AccessLevel') {
-                            //for表格標頭
-                            this.fields.push(tmp);
-                        }
-                    }
-                    this.fields.push({
-                        key: 'Actions',
-                        label: '操作',
-                        sortable: false
-                    });
                 }
                 if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
                 }
@@ -558,6 +528,32 @@
                 }
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
                 }
+
+                //從1開始是因為第0個欄位是id，這裡不需要
+                for (let i = 1; i < this.defaultItem.length; ++i) {
+                    let defaultItem = this.defaultItem[i];
+
+                    let tmp = {
+                        key: defaultItem.key,
+                        label: defaultItem.label,
+                        sortable: defaultItem.sortable
+                    };
+
+                    //for匯出
+                    this.columnsExported.push(tmp);
+
+                    if (defaultItem.field == true) {
+                        //for表格標頭
+                        this.fields.push(tmp);
+                    }
+                }
+                this.fields.push({
+                    key: 'Actions',
+                    label: '操作',
+                    sortable: false
+                });
+
+                console.log(this.fields);
             },
             initSelectedColumnExported() {
                 this.selectedColumnExported = [];
@@ -570,12 +566,10 @@
             },
             initItem() {
                 this.item = {};
-                if (this.type == this.GLOBAL.SERVICE_STAFF) {
-                    for (let i = 0; i < this.defaultItem.length; ++i) {
-                        let defaultItem = this.defaultItem[i];
+                for (let i = 0; i < this.defaultItem.length; ++i) {
+                    let defaultItem = this.defaultItem[i];
 
-                        this.item[defaultItem.key] = defaultItem.default;
-                    }
+                    this.item[defaultItem.key] = defaultItem.default;
                 }
             },
             initAddModal() {
@@ -596,27 +590,24 @@
 
                 if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.modalTitle += '員工';
-
-                    this.isModalReady = true;
                 }
                 
                 if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
                     this.modalTitle += '客戶';
-
-                    this.isModalReady = true;
                 }
 
                 if (this.type == this.GLOBAL.SERVICE_ROOM) {
                     this.modalTitle += '包廂';
 
-                    this.isModalReady = true;
+                    //初始化客戶的業績幹部
+                    this.customerStaffName = '';
                 }
                 
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
                     this.modalTitle += '貨品';
-
-                    this.isModalReady = true;
                 }
+
+                this.isModalReady = true;
             },
             initEditModal(item) {
                 //reset modal status
@@ -634,14 +625,32 @@
                 //set modal title
                 this.modalTitle = '編輯';
 
+                //acquire selected data
+                this.item = item;
+
                 if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.modalTitle += '員工';
-
-                    //acquire selected data
-                    this.item = item;
-                    
-                    this.isModalReady = true;
                 }
+
+                if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+                    this.modalTitle += '客戶';
+
+                    //初始化業績幹部
+                    this.customerStaffName = '';
+
+                    //根據客戶的staff code取得客戶的staff名稱
+                    this.getCustomerStaffNameByCode()
+                }
+
+                if (this.type == this.GLOBAL.SERVICE_ROOM) {
+                    this.modalTitle += '包廂';
+                }
+
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
+                    this.modalTitle += '貨品';
+                }
+
+                this.isModalReady = true;
             },
             initExportModal(item) {
                 //reset modal status
@@ -658,27 +667,21 @@
 
                 if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.modalTitle += '員工';
-
-                    this.isModalReady = true;
                 }
                 
                 if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
                     this.modalTitle += '客戶';
-
-                    this.isModalReady = true;
                 }
 
                 if (this.type == this.GLOBAL.SERVICE_ROOM) {
                     this.modalTitle += '包廂';
-
-                    this.isModalReady = true;
                 }
                 
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
                     this.modalTitle += '貨品';
-
-                    this.isModalReady = true;
                 }
+                    
+                this.isModalReady = true;
             },
             initDeleteModal(item) {
                 //reset modal status
@@ -698,12 +701,24 @@
 
                 if (this.type == this.GLOBAL.SERVICE_STAFF) {
                     this.modalTitle += '員工';
-
-                    this.isModalReady = true;
-
-                    //acquire selected data
-                    this.item = item;
                 }
+
+                if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+                    this.modalTitle += '客戶';
+                }
+
+                if (this.type == this.GLOBAL.SERVICE_ROOM) {
+                    this.modalTitle += '包廂';
+                }
+                
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
+                    this.modalTitle += '貨品';
+                }
+
+                this.isModalReady = true;
+
+                //acquire selected data
+                this.item = item;
             },
             onFiltered() {
                 this.getItems();
@@ -850,6 +865,23 @@
                 }).catch(function (error) {
                 });
             },
+            getCustomerStaffNameByCode() {
+                let code = this.item['StaffCode'];
+
+                if (code == '') {
+                    this.customerStaffName = '查無此員工';
+
+                    return;
+                }
+
+                this.getCustomerStaffNameUrl = '/api/' + this.GLOBAL.SERVICE_STAFF + '/code/' + code;
+
+                let self = this;
+                axios.get(this.getCustomerStaffNameUrl).then(function (response) {
+                    self.customerStaffName = response.data.data;
+                }).catch(function (error) {
+                });
+            },
             onPageChanged(e) {
                 this.currentPage = e;
 
@@ -864,6 +896,9 @@
                 this.sortDesc = e.sortDesc;
 
                 this.getItems();
+            },
+            onInputGetStaffName() {
+                this.getCustomerStaffNameByCode();
             }
         },
         watch: {

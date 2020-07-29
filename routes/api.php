@@ -27,9 +27,15 @@ Route::post('/staff', 'Item\ItemController@addStaff');
 Route::put('/staff', 'Item\ItemController@editStaff');
 Route::delete('/staff', 'Item\ItemController@deleteStaff');
 
-
 Route::get('/staff/export', 'Item\ItemController@exportStaff');
+Route::get('/customer/export', 'Item\ItemController@exportCustomer');
 
 Route::get('/customer', 'Item\ItemController@getCustomer');
+Route::post('/customer', 'Item\ItemController@addCustomer');
+Route::put('/customer', 'Item\ItemController@editCustomer');
+Route::delete('/customer', 'Item\ItemController@deleteCustomer');
+
 Route::get('/room', 'Item\ItemController@getRoom');
 Route::get('/food', 'Item\ItemController@getFood');
+
+Route::get('/staff/code/{Code}', 'Item\ItemController@getStaffByCode');

@@ -2342,11 +2342,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2373,6 +2368,8 @@ __webpack_require__.r(__webpack_exports__);
       //staff 職務
       fileTypes: [],
       //staff 檔別
+      customerStaffName: '',
+      //客戶的業績幹部
       headerTitle: '',
       modalTitle: '',
       modalActionAdd: 'add',
@@ -2386,6 +2383,7 @@ __webpack_require__.r(__webpack_exports__);
       deleteItemUrl: '',
       exportItemUrl: '',
       getItemMiscUrl: '',
+      getCustomerStaffNameUrl: '',
       isTableReady: false,
       isModalReady: false,
       isItemApiReady: true,
@@ -2434,15 +2432,15 @@ __webpack_require__.r(__webpack_exports__);
         if (self.type == self.GLOBAL.SERVICE_STAFF) {
           self.accessLevels = response.data.data.accessLevels;
           self.fileTypes = response.data.data.fileTypes;
-          self.defaultItem = response.data.data.defaultItem;
         }
 
         if (self.type == self.GLOBAL.SERVICE_CUSTOMER) {}
 
         if (self.type == self.GLOBAL.SERVICE_ROOM) {}
 
-        if (self.type == self.GLOBAL.SERVICE_FOOD) {} //初始化表格標頭
+        if (self.type == self.GLOBAL.SERVICE_FOOD) {}
 
+        self.defaultItem = response.data.data.defaultItem; //初始化表格標頭
 
         self.initFields(); //初始化匯出欄位
 
@@ -2455,36 +2453,37 @@ __webpack_require__.r(__webpack_exports__);
       this.columnsExported = [];
       this.fields = [];
 
-      if (this.type == this.GLOBAL.SERVICE_STAFF) {
-        //從1開始是因為第0個欄位是id，這裡不需要
-        for (var i = 1; i < this.defaultItem.length; ++i) {
-          var defaultItem = this.defaultItem[i];
-          var tmp = {
-            key: defaultItem.key,
-            label: defaultItem.label,
-            sortable: defaultItem.sortable
-          }; //for匯出
-
-          this.columnsExported.push(tmp);
-
-          if (defaultItem.key == 'Code' || defaultItem.key == 'Name' || defaultItem.key == 'RealName' || defaultItem.key == 'NickName' || defaultItem.key == 'SerialNumber' || defaultItem.key == 'AccessLevel') {
-            //for表格標頭
-            this.fields.push(tmp);
-          }
-        }
-
-        this.fields.push({
-          key: 'Actions',
-          label: '操作',
-          sortable: false
-        });
-      }
+      if (this.type == this.GLOBAL.SERVICE_STAFF) {}
 
       if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {}
 
       if (this.type == this.GLOBAL.SERVICE_ROOM) {}
 
-      if (this.type == this.GLOBAL.SERVICE_FOOD) {}
+      if (this.type == this.GLOBAL.SERVICE_FOOD) {} //從1開始是因為第0個欄位是id，這裡不需要
+
+
+      for (var i = 1; i < this.defaultItem.length; ++i) {
+        var defaultItem = this.defaultItem[i];
+        var tmp = {
+          key: defaultItem.key,
+          label: defaultItem.label,
+          sortable: defaultItem.sortable
+        }; //for匯出
+
+        this.columnsExported.push(tmp);
+
+        if (defaultItem.field == true) {
+          //for表格標頭
+          this.fields.push(tmp);
+        }
+      }
+
+      this.fields.push({
+        key: 'Actions',
+        label: '操作',
+        sortable: false
+      });
+      console.log(this.fields);
     },
     initSelectedColumnExported: function initSelectedColumnExported() {
       this.selectedColumnExported = []; //從1開始是因為第0個欄位是id，這裡不需要
@@ -2497,11 +2496,9 @@ __webpack_require__.r(__webpack_exports__);
     initItem: function initItem() {
       this.item = {};
 
-      if (this.type == this.GLOBAL.SERVICE_STAFF) {
-        for (var i = 0; i < this.defaultItem.length; ++i) {
-          var defaultItem = this.defaultItem[i];
-          this.item[defaultItem.key] = defaultItem["default"];
-        }
+      for (var i = 0; i < this.defaultItem.length; ++i) {
+        var defaultItem = this.defaultItem[i];
+        this.item[defaultItem.key] = defaultItem["default"];
       }
     },
     initAddModal: function initAddModal() {
@@ -2518,23 +2515,21 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.type == this.GLOBAL.SERVICE_STAFF) {
         this.modalTitle += '員工';
-        this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
         this.modalTitle += '客戶';
-        this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_ROOM) {
         this.modalTitle += '包廂';
-        this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_FOOD) {
         this.modalTitle += '貨品';
-        this.isModalReady = true;
       }
+
+      this.isModalReady = true;
     },
     initEditModal: function initEditModal(item) {
       //reset modal status
@@ -2546,14 +2541,31 @@ __webpack_require__.r(__webpack_exports__);
 
       this.initItem(); //set modal title
 
-      this.modalTitle = '編輯';
+      this.modalTitle = '編輯'; //acquire selected data
+
+      this.item = item;
 
       if (this.type == this.GLOBAL.SERVICE_STAFF) {
-        this.modalTitle += '員工'; //acquire selected data
-
-        this.item = item;
-        this.isModalReady = true;
+        this.modalTitle += '員工';
       }
+
+      if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+        this.modalTitle += '客戶'; //初始化業績幹部
+
+        this.customerStaffName = ''; //根據客戶的staff code取得客戶的staff名稱
+
+        this.getCustomerStaffNameByCode();
+      }
+
+      if (this.type == this.GLOBAL.SERVICE_ROOM) {
+        this.modalTitle += '包廂';
+      }
+
+      if (this.type == this.GLOBAL.SERVICE_FOOD) {
+        this.modalTitle += '貨品';
+      }
+
+      this.isModalReady = true;
     },
     initExportModal: function initExportModal(item) {
       //reset modal status
@@ -2567,23 +2579,21 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.type == this.GLOBAL.SERVICE_STAFF) {
         this.modalTitle += '員工';
-        this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
         this.modalTitle += '客戶';
-        this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_ROOM) {
         this.modalTitle += '包廂';
-        this.isModalReady = true;
       }
 
       if (this.type == this.GLOBAL.SERVICE_FOOD) {
         this.modalTitle += '貨品';
-        this.isModalReady = true;
       }
+
+      this.isModalReady = true;
     },
     initDeleteModal: function initDeleteModal(item) {
       //reset modal status
@@ -2599,10 +2609,23 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.type == this.GLOBAL.SERVICE_STAFF) {
         this.modalTitle += '員工';
-        this.isModalReady = true; //acquire selected data
-
-        this.item = item;
       }
+
+      if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
+        this.modalTitle += '客戶';
+      }
+
+      if (this.type == this.GLOBAL.SERVICE_ROOM) {
+        this.modalTitle += '包廂';
+      }
+
+      if (this.type == this.GLOBAL.SERVICE_FOOD) {
+        this.modalTitle += '貨品';
+      }
+
+      this.isModalReady = true; //acquire selected data
+
+      this.item = item;
     },
     onFiltered: function onFiltered() {
       this.getItems();
@@ -2736,6 +2759,20 @@ __webpack_require__.r(__webpack_exports__);
         self.isTableReady = true;
       })["catch"](function (error) {});
     },
+    getCustomerStaffNameByCode: function getCustomerStaffNameByCode() {
+      var code = this.item['StaffCode'];
+
+      if (code == '') {
+        this.customerStaffName = '查無此員工';
+        return;
+      }
+
+      this.getCustomerStaffNameUrl = '/api/' + this.GLOBAL.SERVICE_STAFF + '/code/' + code;
+      var self = this;
+      axios.get(this.getCustomerStaffNameUrl).then(function (response) {
+        self.customerStaffName = response.data.data;
+      })["catch"](function (error) {});
+    },
     onPageChanged: function onPageChanged(e) {
       this.currentPage = e;
       this.getItems();
@@ -2748,6 +2785,9 @@ __webpack_require__.r(__webpack_exports__);
       this.sortBy = e.sortBy;
       this.sortDesc = e.sortDesc;
       this.getItems();
+    },
+    onInputGetStaffName: function onInputGetStaffName() {
+      this.getCustomerStaffNameByCode();
     }
   },
   watch: {
@@ -80626,21 +80666,736 @@ var render = function() {
                     _vm._v(" "),
                     _vm.type === _vm.GLOBAL.SERVICE_CUSTOMER
                       ? _c("form", [
-                          _vm._m(6),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _vm._m(6),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Code,
+                                    expression: "item.Code"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Code },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Code",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _vm._m(7),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Name,
+                                    expression: "item.Name"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Name },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Name",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-6" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("公司")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Company,
+                                    expression: "item.Company"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Company },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Company",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _vm._m(7),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("生日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Birthday,
+                                    expression: "item.Birthday"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "date" },
+                                domProps: { value: _vm.item.Birthday },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Birthday",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("信用額度")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Credit,
+                                    expression: "item.Credit"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Credit },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Credit",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _vm._m(8),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.IsOpenReceipt,
+                                      expression: "item.IsOpenReceipt"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.item,
+                                        "IsOpenReceipt",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("option", [_vm._v("是")]),
+                                  _vm._v(" "),
+                                  _c("option", [_vm._v("否")])
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("發票檯頭")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.ReceiptTitle,
+                                    expression: "item.ReceiptTitle"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.ReceiptTitle },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "ReceiptTitle",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _vm._m(8),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-6" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("發票地址")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.ReceiptAddress,
+                                    expression: "item.ReceiptAddress"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.ReceiptAddress },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "ReceiptAddress",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-6" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("收款地址")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.GetPaidAddress,
+                                    expression: "item.GetPaidAddress"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.GetPaidAddress },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "GetPaidAddress",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _vm._m(9),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("聯絡人")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Contactor,
+                                    expression: "item.Contactor"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Contactor },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Contactor",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("統一編號")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.TaxNumber,
+                                    expression: "item.TaxNumber"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.TaxNumber },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "TaxNumber",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("電話號碼")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Phone,
+                                    expression: "item.Phone"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Phone },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Phone",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _vm._m(10),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-6" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("備註")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.Note,
+                                    expression: "item.Note"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.Note },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "Note",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _vm._m(11),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("放單日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.ReleaseOrderDate,
+                                    expression: "item.ReleaseOrderDate"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "date" },
+                                domProps: { value: _vm.item.ReleaseOrderDate },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "ReleaseOrderDate",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("收款日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.GetPaidDate,
+                                    expression: "item.GetPaidDate"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "date" },
+                                domProps: { value: _vm.item.GetPaidDate },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "GetPaidDate",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("清帳方式")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.ClearLog,
+                                    expression: "item.ClearLog"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.ClearLog },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "ClearLog",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _vm._m(12),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("前更動日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.PreUpdatedTime,
+                                    expression: "item.PreUpdatedTime"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "date", readonly: "" },
+                                domProps: { value: _vm.item.PreUpdatedTime },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "PreUpdatedTime",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("最後更動日")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.UpdatedTime,
+                                    expression: "item.UpdatedTime"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "date", readonly: "" },
+                                domProps: { value: _vm.item.UpdatedTime },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "UpdatedTime",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _c("label", { staticClass: "col-form-label" }, [
+                                _vm._v("最後消費日期")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.LatestConsumpDate,
+                                    expression: "item.LatestConsumpDate"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "date" },
+                                domProps: { value: _vm.item.LatestConsumpDate },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.item,
+                                      "LatestConsumpDate",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _vm._m(13)
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "form-group col-md-2" }, [
+                              _vm._m(9),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.item.StaffCode,
+                                    expression: "item.StaffCode"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.item.StaffCode },
+                                on: {
+                                  input: [
+                                    function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "StaffCode",
+                                        $event.target.value
+                                      )
+                                    },
+                                    _vm.onInputGetStaffName
+                                  ]
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group col-md-4" }, [
+                              _vm._m(10),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.customerStaffName,
+                                    expression: "customerStaffName"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text", readonly: "" },
+                                domProps: { value: _vm.customerStaffName },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.customerStaffName = $event.target.value
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "form-group col-md-4 offset-md-2"
+                              },
+                              [
+                                _c("label", { staticClass: "col-form-label" }, [
+                                  _vm._v("客戶類別")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.item.CustomerType,
+                                      expression: "item.CustomerType"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.item.CustomerType },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.item,
+                                        "CustomerType",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]
+                            )
+                          ])
                         ])
                       : _vm._e(),
                     _vm._v(" "),
@@ -80777,51 +81532,42 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "modal-body" }, [
-                    _vm.type === _vm.GLOBAL.SERVICE_STAFF
-                      ? _c(
-                          "form",
-                          [
-                            _c(
-                              "b-form-group",
-                              { attrs: { label: "請選擇要匯出的欄位" } },
-                              [
-                                _c(
-                                  "b-form-checkbox-group",
-                                  {
-                                    model: {
-                                      value: _vm.selectedColumnExported,
-                                      callback: function($$v) {
-                                        _vm.selectedColumnExported = $$v
-                                      },
-                                      expression: "selectedColumnExported"
-                                    }
-                                  },
-                                  _vm._l(_vm.columnsExported, function(
-                                    columnExported
-                                  ) {
-                                    return _c(
-                                      "b-form-checkbox",
-                                      { attrs: { value: columnExported.key } },
-                                      [_vm._v(_vm._s(columnExported.label))]
-                                    )
-                                  }),
-                                  1
-                                )
-                              ],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.type === _vm.GLOBAL.SERVICE_ROOM
-                      ? _c("form")
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.type === _vm.GLOBAL.SERVICE_FOOD ? _c("form") : _vm._e()
-                  ]),
+                  _c(
+                    "div",
+                    { staticClass: "modal-body" },
+                    [
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "請選擇要匯出的欄位" } },
+                        [
+                          _c(
+                            "b-form-checkbox-group",
+                            {
+                              model: {
+                                value: _vm.selectedColumnExported,
+                                callback: function($$v) {
+                                  _vm.selectedColumnExported = $$v
+                                },
+                                expression: "selectedColumnExported"
+                              }
+                            },
+                            _vm._l(_vm.columnsExported, function(
+                              columnExported
+                            ) {
+                              return _c(
+                                "b-form-checkbox",
+                                { attrs: { value: columnExported.key } },
+                                [_vm._v(_vm._s(columnExported.label))]
+                              )
+                            }),
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
                   _vm._v(" "),
                   _c(
                     "div",
@@ -81037,182 +81783,45 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-2" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("客戶編號")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("姓名")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-6" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("公司")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ])
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("客戶編號"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("生日")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-2" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("信用額度")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-2" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("開發票")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("發票檯頭")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ])
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("姓名"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-6" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("發票地址")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-6" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("收款地址")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ])
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("開發票"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("聯絡人")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("統一編號")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("電話號碼")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ])
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("業績幹部"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-6" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("備註")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("放單日")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("收款日")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("清帳方式")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("前更動日")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("最後更動日")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [
-          _vm._v("最後消費日期")
-        ]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "date" } })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("業績幹部1")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("業績幹部2")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group col-md-4" }, [
-        _c("label", { staticClass: "col-form-label" }, [_vm._v("客戶類別")]),
-        _vm._v(" "),
-        _c("input", { staticClass: "form-control", attrs: { type: "text" } })
-      ])
+    return _c("label", { staticClass: "col-form-label" }, [
+      _vm._v("業績幹部"),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
     ])
   }
 ]

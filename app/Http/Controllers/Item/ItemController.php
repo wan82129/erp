@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 
 use App\Exports\StaffExport;
+use App\Exports\CustomerExport;
 
 use App\Services\Item\ItemService;
 
@@ -144,7 +145,9 @@ class ItemController extends Controller
     
     public function getCustomerMisc(ItemRequest $request)
     {
-        return new ItemResource(true);
+        $result = $this->ItemService->getCustomerMisc();
+        
+        return new ItemResource($result);
     }
 
     /**
@@ -212,6 +215,48 @@ class ItemController extends Controller
         }
 
         $result = $this->ItemService->getCustomer($sortBy, $sortDirection, $currentPage, $this->perPage, $filter);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * add customer
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function addCustomer(ItemRequest $request)
+    {
+        $result = $this->ItemService->addCustomer($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * edit customer
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function editCustomer(ItemRequest $request)
+    {
+        $result = $this->ItemService->editCustomer($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * delete customer
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function deleteCustomer(ItemRequest $request)
+    {
+        $result = $this->ItemService->deleteCustomer(
+            $request->Id
+        );
         
         return new ItemResource($result);
     }
@@ -315,5 +360,29 @@ class ItemController extends Controller
     public function exportStaff(ItemRequest $request)
     {
         return Excel::download(new StaffExport($request->Columns), 'staff.xlsx');
+    }
+
+    /**
+     * export customer
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function exportCustomer(ItemRequest $request)
+    {
+        return Excel::download(new CustomerExport($request->Columns), 'customer.xlsx');
+    }
+
+    /**
+     * get staff by code
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function getStaffByCode(ItemRequest $request)
+    {
+        $result = $this->ItemService->getStaffByCode($request->Code);
+
+        return new ItemResource($result);
     }
 }
