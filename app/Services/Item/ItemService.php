@@ -11,8 +11,14 @@ class ItemService
     protected $ItemRepository;
 
     private $perPage = 20;
-    private $accessLevels = ['董', '常董', '小姐', '櫃檯', '會計', '控檯'];
-    private $fileTypes = ['A', 'B', 'C'];
+
+    private $accessLevels = ['董', '常董', '小姐', '櫃檯', '會計', '控檯']; //staff
+    private $fileTypes = ['A', 'B', 'C']; //staff
+
+    private $roomLevels = ['一般', '一級', '二級', '三級', '四級', '五級', '六級']; //room
+
+    private $foodTypes = ['酒', '吧', '廚']; // food
+
 
     public function __construct(ItemRepository $itemRepository)
     {
@@ -379,7 +385,7 @@ class ItemService
             'sortDesc' => $sortDesc,
             'currentPage' => $currentPage,
             'perPage' => $this->perPage,
-            'totalRows' => 0,
+            'totalRows' => $customersCount,
             'filter' => $filter
         ]);
 
@@ -613,6 +619,18 @@ class ItemService
      */
     public function getRoom($sortBy, $sortDirection, $currentPage, $perPage, $filter)
     {
+        $rooms = $this->ItemRepository->getRoom($sortBy, $sortDirection, $currentPage, $perPage, $filter);
+        if ($filter == '') {
+            $roomsCount = $this->ItemRepository->getRoomCount();
+        }
+        else {
+            $roomsCount = $rooms->count();
+        }
+
+        $result = $rooms->transform(function($item, $key) {
+            return $item;
+        });
+
         if ($sortDirection == 'desc') {
             $sortDesc = true;
         }
@@ -621,13 +639,158 @@ class ItemService
         }
 
         $collection = collect([
-            'items' => collect(),
+            'items' => $result,
             'sortBy' => $sortBy,
             'sortDesc' => $sortDesc,
             'currentPage' => $currentPage,
             'perPage' => $this->perPage,
-            'totalRows' => 0,
+            'totalRows' => $roomsCount,
             'filter' => $filter
+        ]);
+
+        return $collection;
+    }
+
+    /**
+     * 新增room
+     */
+    public function addRoom($room)
+    {
+        unset($room['Id']);
+        $room['UpdatedTime'] = Carbon::now()->toDateString();
+
+        $result = $this->ItemRepository->addRoom($room);
+
+        //驗證是否新增成功
+        if ($result->Code == $room['Code']) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 新增room
+     */
+    public function editRoom($room)
+    {
+        $result = $this->ItemRepository->editRoom($room);
+
+        //驗證是否編輯成功
+        if ($result == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 新增room
+     */
+    public function deleteRoom($id)
+    {
+        $result = $this->ItemRepository->deleteRoom($id);
+
+        //驗證是否刪除成功
+        if ($result == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 取得room其他資料
+     */
+    public function getRoomMisc()
+    {
+        //for前端
+        $defaultRoom = [
+            [
+                'key' => 'Id',
+                'default' => '',
+                'label' => '編號',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Code',
+                'default' => '',
+                'label' => '代號',
+                'field' => true,
+                'sortable' => true
+            ],
+            [
+                'key' => 'Name',
+                'default' => '',
+                'label' => '姓名',
+                'field' => true,
+                'sortable' => true
+            ],
+            [
+                'key' => 'LimitCount',
+                'default' => '',
+                'label' => '容納人數',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'MorningPrice',
+                'default' => '',
+                'label' => '早班價',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'NightPrice',
+                'default' =>'',
+                'label' => '晚班價',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'TimeoutPrice',
+                'default' => '',
+                'label' => '逾時價',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Level',
+                'default' => '一般',
+                'label' => '級數',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'HaveDefaultOpeningFood',
+                'default' => '是',
+                'label' => '開桌菜',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Note',
+                'default' => '',
+                'label' => '備註',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'UpdatedTime',
+                'default' => '',
+                'label' => '更動日期',
+                'field' => true,
+                'sortable' => false
+            ]
+        ];
+
+        $collection = collect([
+            'roomLevels' => $this->roomLevels,
+            'defaultItem' => $defaultRoom
         ]);
 
         return $collection;
@@ -638,6 +801,19 @@ class ItemService
      */
     public function getFood($sortBy, $sortDirection, $currentPage, $perPage, $filter)
     {
+        $foods = $this->ItemRepository->getFood($sortBy, $sortDirection, $currentPage, $perPage, $filter);
+        if ($filter == '') {
+            $foodsCount = $this->ItemRepository->getFoodCount();
+        }
+        else {
+            $foodsCount = $foods->count();
+        }
+
+        $result = $foods->transform(function($item, $key) {
+            $item = $this->splitDefaultOpeningFoodCountPerRoomType($item);
+            return $item;
+        });
+
         if ($sortDirection == 'desc') {
             $sortDesc = true;
         }
@@ -646,13 +822,281 @@ class ItemService
         }
 
         $collection = collect([
-            'items' => collect(),
+            'items' => $result,
             'sortBy' => $sortBy,
             'sortDesc' => $sortDesc,
             'currentPage' => $currentPage,
             'perPage' => $this->perPage,
-            'totalRows' => 0,
+            'totalRows' => $foodsCount,
             'filter' => $filter
+        ]);
+
+        return $collection;
+    }
+
+    /**
+     * 新增food
+     */
+    public function addFood($food)
+    {
+        $food = $this->mergeDefaultOpeningFoodCountPerRoomType($food);
+
+        unset($food['Id']);
+        $food['UpdatedTime'] = Carbon::now()->toDateString();
+
+        $result = $this->ItemRepository->addFood($food);
+
+        //驗證是否新增成功
+        if ($result->Code == $food['Code']) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 新增food
+     */
+    public function editFood($food)
+    {
+        $food = $this->mergeDefaultOpeningFoodCountPerRoomType($food);
+        
+        $result = $this->ItemRepository->editFood($food);
+
+        //驗證是否編輯成功
+        if ($result == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 新增food
+     */
+    public function deleteFood($id)
+    {
+        $result = $this->ItemRepository->deleteFood($id);
+
+        //驗證是否刪除成功
+        if ($result == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 取得food其他資料
+     */
+    public function getFoodMisc()
+    {
+        //for前端
+        $defaultFood = [
+            [
+                'key' => 'Id',
+                'default' => '',
+                'label' => '編號',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Code',
+                'default' => '',
+                'label' => '代號',
+                'field' => true,
+                'sortable' => true
+            ],
+            [
+                'key' => 'Name',
+                'default' => '',
+                'label' => '品名',
+                'field' => true,
+                'sortable' => true
+            ],
+            [
+                'key' => 'Count',
+                'default' => '',
+                'label' => '單位',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Type',
+                'default' => '酒',
+                'label' => '類別',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'IsDefaultOpeningFood',
+                'default' =>'是',
+                'label' => '開桌菜',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'DefaultOpeningFoodCount1',
+                'default' => '',
+                'label' => '開桌數(一般)',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'DefaultOpeningFoodCount2',
+                'default' => '',
+                'label' => '開桌數(一級)',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'DefaultOpeningFoodCount3',
+                'default' => '',
+                'label' => '開桌數(二級)',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'DefaultOpeningFoodCount4',
+                'default' => '',
+                'label' => '開桌數(三級)',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'DefaultOpeningFoodCount5',
+                'default' => '',
+                'label' => '開桌數(四級)',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'DefaultOpeningFoodCount6',
+                'default' => '',
+                'label' => '開桌數(五級)',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'DefaultOpeningFoodCount7',
+                'default' => '',
+                'label' => '開桌數(六級)',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'IsFreeService',
+                'default' => '否',
+                'label' => '是否做招待',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'WineType',
+                'default' => '',
+                'label' => '酒別',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'SelfHelpPrice',
+                'default' => '',
+                'label' => '自助售價',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Price',
+                'default' => '',
+                'label' => '售價',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'PremiumPrice',
+                'default' => '',
+                'label' => '會員價',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'SafeCount',
+                'default' => '',
+                'label' => '安全存量',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Note',
+                'default' => '',
+                'label' => '備註',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'IsCount',
+                'default' => '是',
+                'label' => '計存量',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'CurrentCount',
+                'default' => '',
+                'label' => '目前存量',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'LatestPurchaseDate',
+                'default' => '',
+                'label' => '最近進貨日期',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'PurchasePrice',
+                'default' => '',
+                'label' => '進貨單價',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'PurchaseCompany',
+                'default' => '',
+                'label' => '進貨廠商',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'IsScore',
+                'default' => '是',
+                'label' => '計業績',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'IsLowestThershold',
+                'default' => '是',
+                'label' => '抵低消',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'IsTurnover',
+                'default' => '是',
+                'label' => '計營業額',
+                'field' => true,
+                'sortable' => false
+            ]
+        ];
+
+        $collection = collect([
+            'foodTypes' => $this->foodTypes,
+            'defaultItem' => $defaultFood
         ]);
 
         return $collection;
@@ -673,5 +1117,53 @@ class ItemService
         }
 
         return $result;
+    }
+
+    /**
+     * split DefaultOpeningFoodCountPerRoomType
+     */
+    public function splitDefaultOpeningFoodCountPerRoomType($item)
+    {
+        //from backend to frontend
+        $arr = explode(',', $item->DefaultOpeningFoodCountPerRoomType);
+
+        $item->DefaultOpeningFoodCount1 = $arr[0];
+        $item->DefaultOpeningFoodCount2 = $arr[1];
+        $item->DefaultOpeningFoodCount3 = $arr[2];
+        $item->DefaultOpeningFoodCount4 = $arr[3];
+        $item->DefaultOpeningFoodCount5 = $arr[4];
+        $item->DefaultOpeningFoodCount6 = $arr[5];
+        $item->DefaultOpeningFoodCount7 = $arr[6];
+
+        unset($item->DefaultOpeningFoodCountPerRoomType);
+
+        return $item;
+    }
+
+    /**
+     * merge DefaultOpeningFoodCountPerRoomType
+     */
+    public function mergeDefaultOpeningFoodCountPerRoomType($items)
+    {
+        //from frontend to backend
+        $items['DefaultOpeningFoodCountPerRoomType'] = implode(',', array(
+            $items['DefaultOpeningFoodCount1'],
+            $items['DefaultOpeningFoodCount2'],
+            $items['DefaultOpeningFoodCount3'],
+            $items['DefaultOpeningFoodCount4'],
+            $items['DefaultOpeningFoodCount5'],
+            $items['DefaultOpeningFoodCount6'],
+            $items['DefaultOpeningFoodCount7'],
+        ));
+
+        unset($items['DefaultOpeningFoodCount1']);
+        unset($items['DefaultOpeningFoodCount2']);
+        unset($items['DefaultOpeningFoodCount3']);
+        unset($items['DefaultOpeningFoodCount4']);
+        unset($items['DefaultOpeningFoodCount5']);
+        unset($items['DefaultOpeningFoodCount6']);
+        unset($items['DefaultOpeningFoodCount7']);
+
+        return $items;
     }
 }

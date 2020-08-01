@@ -6,13 +6,17 @@ use Carbon\Carbon;
 
 use App\Models\StaffModel;
 use App\Models\CustomerModel;
+use App\Models\RoomModel;
+use App\Models\FoodModel;
 
 class ItemRepository
 {
-    public function __construct(StaffModel $staffModel, CustomerModel $customerModel)
+    public function __construct(StaffModel $staffModel, CustomerModel $customerModel, RoomModel $roomModel, FoodModel $foodModel)
     {
         $this->StaffModel = $staffModel;
         $this->CustomerModel = $customerModel;
+        $this->RoomModel = $roomModel;
+        $this->FoodModel = $foodModel;
     }
 
     /**
@@ -27,10 +31,7 @@ class ItemRepository
             ->where('Status', 'Use')
             ->where(function ($query) use ($filter) {
                 $query->where('Code', 'LIKE', $filter)
-                      ->orWhere('Name', 'LIKE', $filter)
-                      ->orWhere('RealName', 'LIKE', $filter)
-                      ->orWhere('NickName', 'LIKE', $filter)
-                      ->orWhere('AccessLevel', 'LIKE', $filter);
+                      ->orWhere('Name', 'LIKE', $filter);
             })
             ->orderBy($sortBy, $sortDirection)
             ->orderBy('UpdatedTime', 'DESC')
@@ -230,5 +231,187 @@ class ItemRepository
             ->first();
 
         return $staff;
+    }
+
+    /**
+     * get room
+     *
+     */
+    public function getRoom($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        $filter = '%'.$filter.'%';
+
+        $result = $this->RoomModel
+            ->where('Status', 'Use')
+            ->where(function ($query) use ($filter) {
+                $query->where('Code', 'LIKE', $filter)
+                      ->orWhere('Name', 'LIKE', $filter);
+            })
+            ->orderBy($sortBy, $sortDirection)
+            ->orderBy('UpdatedTime', 'DESC')
+            ->skip(($currentPage - 1) * $perPage)->take($perPage)
+            ->get();
+
+        return $result;
+    }
+
+    /**
+     * get room count
+     *
+     */
+    public function getRoomCount()
+    {
+        $result = $this->RoomModel::count();
+
+        return $result;
+    }
+
+
+    /**
+     * add room
+     *
+     */
+    public function addRoom($room)
+    {
+        $result = $this->RoomModel::create($room);
+
+        return $result;
+    }
+
+    /**
+     * edit room
+     *
+     */
+    public function editRoom($room)
+    {
+        $result = $this->RoomModel::find($room['Id']);
+
+        $result->Code = $room['Code'];
+        $result->Name = $room['Name'];
+        $result->LimitCount = $room['LimitCount'];
+        $result->MorningPrice = $room['MorningPrice'];
+        $result->NightPrice = $room['NightPrice'];
+        $result->TimeoutPrice = $room['TimeoutPrice'];
+        $result->Level = $room['Level'];
+        $result->HaveDefaultOpeningFood = $room['HaveDefaultOpeningFood'];
+        $result->Note = $room['Note'];
+        $result->UpdatedTime = Carbon::now()->toDateString();
+
+        $result->save();
+
+        return $result;
+    }
+
+    /**
+     * delete room
+     *
+     */
+    public function deleteRoom($id)
+    {
+        $room = $this->RoomModel::find($id);
+
+        $room->Status = 'Delete';
+        $room->UpdatedTime = Carbon::now()->toDateString();
+
+        $room->save();
+
+        return $room;
+    }
+
+    /**
+     * get food
+     *
+     */
+    public function getFood($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        $filter = '%'.$filter.'%';
+
+        $result = $this->FoodModel
+            ->where('Status', 'Use')
+            ->where(function ($query) use ($filter) {
+                $query->where('Code', 'LIKE', $filter)
+                      ->orWhere('Name', 'LIKE', $filter);
+            })
+            ->orderBy($sortBy, $sortDirection)
+            ->orderBy('UpdatedTime', 'DESC')
+            ->skip(($currentPage - 1) * $perPage)->take($perPage)
+            ->get();
+
+        return $result;
+    }
+
+    /**
+     * get food count
+     *
+     */
+    public function getFoodCount()
+    {
+        $result = $this->FoodModel::count();
+
+        return $result;
+    }
+
+
+    /**
+     * add food
+     *
+     */
+    public function addFood($food)
+    {
+        $result = $this->FoodModel::create($food);
+
+        return $result;
+    }
+
+    /**
+     * edit food
+     *
+     */
+    public function editFood($food)
+    {
+        $result = $this->FoodModel::find($food['Id']);
+
+        $result->Code = $food['Code'];
+        $result->Name = $food['Name'];
+        $result->Count = $food['Count'];
+        $result->Type = $food['Type'];
+        $result->IsDefaultOpeningFood = $food['IsDefaultOpeningFood'];
+        $result->DefaultOpeningFoodCountPerRoomType = $food['DefaultOpeningFoodCountPerRoomType'];
+        $result->IsFreeService = $food['IsFreeService'];
+        $result->WineType = $food['WineType'];
+        $result->SelfHelpPrice = $food['SelfHelpPrice'];
+        $result->Price = $food['Price'];
+        $result->PremiumPrice = $food['PremiumPrice'];
+        $result->SafeCount = $food['SafeCount'];
+        $result->Note = $food['Note'];
+        $result->IsCount = $food['IsCount'];
+        $result->CurrentCount = $food['CurrentCount'];
+        $result->LatestPurchaseDate = $food['LatestPurchaseDate'];
+        $result->PurchasePrice = $food['PurchasePrice'];
+        $result->PurchaseCompany = $food['PurchaseCompany'];
+        $result->IsScore = $food['IsScore'];
+        $result->IsLowestThershold = $food['IsLowestThershold'];
+        $result->IsTurnover = $food['IsTurnover'];
+        $result->UpdatedTime = Carbon::now()->toDateString();
+
+        $result->save();
+
+        return $result;
+    }
+
+    /**
+     * delete food
+     *
+     */
+    public function deleteFood($id)
+    {
+        $food = $this->FoodModel::find($id);
+
+        $food->Status = 'Delete';
+        $food->UpdatedTime = Carbon::now()->toDateString();
+
+        $food->save();
+
+        return $food;
     }
 }

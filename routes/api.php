@@ -29,6 +29,8 @@ Route::delete('/staff', 'Item\ItemController@deleteStaff');
 
 Route::get('/staff/export', 'Item\ItemController@exportStaff');
 Route::get('/customer/export', 'Item\ItemController@exportCustomer');
+Route::get('/room/export', 'Item\ItemController@exportRoom');
+Route::get('/room/food', 'Item\ItemController@exportFood');
 
 Route::get('/customer', 'Item\ItemController@getCustomer');
 Route::post('/customer', 'Item\ItemController@addCustomer');
@@ -36,6 +38,13 @@ Route::put('/customer', 'Item\ItemController@editCustomer');
 Route::delete('/customer', 'Item\ItemController@deleteCustomer');
 
 Route::get('/room', 'Item\ItemController@getRoom');
+Route::post('/room', 'Item\ItemController@addRoom');
+Route::put('/room', 'Item\ItemController@editRoom');
+Route::delete('/room', 'Item\ItemController@deleteRoom');
+
 Route::get('/food', 'Item\ItemController@getFood');
+Route::post('/food', 'Item\ItemController@addFood');
+Route::put('/food', 'Item\ItemController@editFood');
+Route::delete('/food', 'Item\ItemController@deleteFood');
 
 Route::get('/staff/code/{Code}', 'Item\ItemController@getStaffByCode');

@@ -214,7 +214,7 @@
                             <form v-if="type === GLOBAL.SERVICE_CUSTOMER">
                                 <div class="row">
                                     <div class="form-group col-md-2">
-                                        <label class="col-form-label">客戶編號<span class="text-danger">*</span></label>
+                                        <label class="col-form-label">客戶代號<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" v-model="item.Code">
                                     </div>
                                     <div class="form-group col-md-4">
@@ -322,9 +322,190 @@
                             </form>
 
                             <form v-if="type === GLOBAL.SERVICE_ROOM">
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">包廂代號<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Code">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">包廂名稱<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Name">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">級數<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.Level">
+                                            <option v-for="roomLevel in roomLevels" v-bind:value="roomLevel">{{ roomLevel }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">容納人數</label>
+                                        <input type="text" class="form-control" v-model="item.LimitCount">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">開桌菜<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.HaveDefaultOpeningFood">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">早班價</label>
+                                        <input type="text" class="form-control" v-model="item.MorningPrice">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">晚班價</label>
+                                        <input type="text" class="form-control" v-model="item.NightPrice">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">逾時價</label>
+                                        <input type="text" class="form-control" v-model="item.TimeoutPrice">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-form-label">備註</label>
+                                        <input type="text" class="form-control" v-model="item.Note">
+                                    </div>
+                                </div>
                             </form>
 
                             <form v-if="type === GLOBAL.SERVICE_FOOD">
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">貨品代號<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Code">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">貨品名稱<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Name">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">單位<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Count">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">物品類別<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.Type">
+                                            <option v-for="foodType in foodTypes" v-bind:value="foodType">{{ foodType }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">開桌菜<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsDefaultOpeningFood">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">可做招待<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsFreeService">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-form-label">酒別</label>
+                                        <input type="text" class="form-control" v-model="item.WineType">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="col-form-label">開桌數(一般)</label>
+                                        <input type="text" class="form-control" v-model="item.DefaultOpeningFoodCount1">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="col-form-label">開桌數(一級)</label>
+                                        <input type="text" class="form-control" v-model="item.DefaultOpeningFoodCount2">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="col-form-label">開桌數(二級)</label>
+                                        <input type="text" class="form-control" v-model="item.DefaultOpeningFoodCount3">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="col-form-label">開桌數(三級)</label>
+                                        <input type="text" class="form-control" v-model="item.DefaultOpeningFoodCount4">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="col-form-label">開桌數(四級)</label>
+                                        <input type="text" class="form-control" v-model="item.DefaultOpeningFoodCount5">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="col-form-label">開桌數(五級)</label>
+                                        <input type="text" class="form-control" v-model="item.DefaultOpeningFoodCount6">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="col-form-label">開桌數(六級)</label>
+                                        <input type="text" class="form-control" v-model="item.DefaultOpeningFoodCount7">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">自助售價</label>
+                                        <input type="text" class="form-control" v-model="item.SelfHelpPrice">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">一般售價</label>
+                                        <input type="text" class="form-control" v-model="item.Price">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">會員售價</label>
+                                        <input type="text" class="form-control" v-model="item.PremiumPrice">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="col-form-label">備註</label>
+                                        <input type="text" class="form-control" v-model="item.Note">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">計存量<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsCount">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">目前存量</label>
+                                        <input type="text" class="form-control" v-model="item.CurrentCount">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">計業績<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsScore">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">抵低消<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsLowestThershold">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">計營業額<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsTurnover">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">最近進貨日期</label>
+                                        <input type="date" class="form-control" v-model="item.LatestPurchaseDate">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">進貨單價</label>
+                                        <input type="text" class="form-control" v-model="item.PurchasePrice">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">進貨廠商</label>
+                                        <input type="text" class="form-control" v-model="item.PurchaseCompany">
+                                    </div>
+                                </div>
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -434,6 +615,8 @@
                 accessLevels: [], //staff 職務
                 fileTypes: [], //staff 檔別
                 customerStaffName: '', //客戶的業績幹部
+                roomLevels: [], //包廂等級
+                foodTypes: [], //餐點類別
 
                 headerTitle: '',
                 modalTitle: '',
@@ -501,8 +684,10 @@
                     if (self.type == self.GLOBAL.SERVICE_CUSTOMER) {
                     }
                     if (self.type == self.GLOBAL.SERVICE_ROOM) {
+                        self.roomLevels = response.data.data.roomLevels;
                     }
                     if (self.type == self.GLOBAL.SERVICE_FOOD) {
+                        self.foodTypes = response.data.data.foodTypes;
                     }
 
                     self.defaultItem = response.data.data.defaultItem;
@@ -594,13 +779,13 @@
                 
                 if (this.type == this.GLOBAL.SERVICE_CUSTOMER) {
                     this.modalTitle += '客戶';
+
+                    //初始化客戶的業績幹部
+                    this.customerStaffName = '';
                 }
 
                 if (this.type == this.GLOBAL.SERVICE_ROOM) {
                     this.modalTitle += '包廂';
-
-                    //初始化客戶的業績幹部
-                    this.customerStaffName = '';
                 }
                 
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {

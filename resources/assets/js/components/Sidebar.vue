@@ -15,6 +15,9 @@
         <li class="nav-item">
             <router-link :to="redirectToFoodUrl" class="nav-link">貨品資料(F)</router-link>
         </li>
+        <li class="nav-item">
+            <router-link :to="redirectToBarAccountUrl" class="nav-link">檯費拆帳(B)</router-link>
+        </li>
     </ul>
 </template>
 
@@ -27,6 +30,7 @@
                 redirectToCustomerUrl: '/item/' + this.GLOBAL.SERVICE_CUSTOMER,
                 redirectToRoomUrl: '/item/' + this.GLOBAL.SERVICE_ROOM,
                 redirectToFoodUrl: '/item/' + this.GLOBAL.SERVICE_FOOD,
+                redirectToBarAccountUrl: ''
             }
         },
         mounted() {

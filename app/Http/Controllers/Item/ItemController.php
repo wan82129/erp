@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 
 use App\Exports\StaffExport;
 use App\Exports\CustomerExport;
+use App\Exports\RoomExport;
+use App\Exports\FoodExport;
 
 use App\Services\Item\ItemService;
 
@@ -159,7 +161,9 @@ class ItemController extends Controller
     
     public function getRoomMisc(ItemRequest $request)
     {
-        return new ItemResource(true);
+        $result = $this->ItemService->getRoomMisc();
+
+        return new ItemResource($result);
     }
 
     /**
@@ -171,7 +175,9 @@ class ItemController extends Controller
     
     public function getFoodMisc(ItemRequest $request)
     {
-        return new ItemResource(true);
+        $result = $this->ItemService->getFoodMisc();
+
+        return new ItemResource($result);
     }
 
     /**
@@ -307,6 +313,48 @@ class ItemController extends Controller
     }
 
     /**
+     * add room
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function addRoom(ItemRequest $request)
+    {
+        $result = $this->ItemService->addRoom($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * edit room
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function editRoom(ItemRequest $request)
+    {
+        $result = $this->ItemService->editRoom($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * delete room
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function deleteRoom(ItemRequest $request)
+    {
+        $result = $this->ItemService->deleteRoom(
+            $request->Id
+        );
+        
+        return new ItemResource($result);
+    }
+
+    /**
      * get item
      *
      * @param App\Http\Requests\Item\ItemRequest
@@ -352,6 +400,48 @@ class ItemController extends Controller
     }
 
     /**
+     * add food
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function addFood(ItemRequest $request)
+    {
+        $result = $this->ItemService->addFood($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * edit food
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function editFood(ItemRequest $request)
+    {
+        $result = $this->ItemService->editFood($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * delete food
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function deleteFood(ItemRequest $request)
+    {
+        $result = $this->ItemService->deleteFood(
+            $request->Id
+        );
+        
+        return new ItemResource($result);
+    }
+
+    /**
      * export staff
      *
      * @param App\Http\Requests\Item\ItemRequest
@@ -371,6 +461,28 @@ class ItemController extends Controller
     public function exportCustomer(ItemRequest $request)
     {
         return Excel::download(new CustomerExport($request->Columns), 'customer.xlsx');
+    }
+
+    /**
+     * export room
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function exportRoom(ItemRequest $request)
+    {
+        return Excel::download(new RoomExport($request->Columns), 'room.xlsx');
+    }
+
+    /**
+     * export food
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function exportFood(ItemRequest $request)
+    {
+        return Excel::download(new FoodExport($request->Columns), 'food.xlsx');
     }
 
     /**
