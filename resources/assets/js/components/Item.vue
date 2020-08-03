@@ -663,6 +663,9 @@
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
                     this.headerTitle = '貨品資料';
                 }
+                if (this.type == this.GLOBAL.SERVICE_BAR) {
+                    this.headerTitle = '檯費拆帳';
+                }
                 this.addItemUrl = '/api/' + this.type;
                 this.editItemUrl = '/api/' + this.type;
                 this.deleteItemUrl = '/api/' + this.type;
@@ -688,6 +691,8 @@
                     }
                     if (self.type == self.GLOBAL.SERVICE_FOOD) {
                         self.foodTypes = response.data.data.foodTypes;
+                    }
+                    if (self.type == self.GLOBAL.SERVICE_BAR) {
                     }
 
                     self.defaultItem = response.data.data.defaultItem;

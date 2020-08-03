@@ -46,6 +46,7 @@ Vue.prototype.GLOBAL = {
     'SERVICE_CUSTOMER': 'customer',
     'SERVICE_ROOM': 'room',
     'SERVICE_FOOD': 'food',
+    'SERVICE_BAR': 'bar'
 };
 
 /**

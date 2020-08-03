@@ -414,4 +414,110 @@ class ItemRepository
 
         return $food;
     }
+
+    /**
+     * get bar
+     *
+     */
+    public function getBar($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        $filter = '%'.$filter.'%';
+
+        $result = $this->BarModel
+            ->where('Status', 'Use')
+            ->where(function ($query) use ($filter) {
+                $query->where('Code', 'LIKE', $filter)
+                      ->orWhere('Name', 'LIKE', $filter);
+            })
+            ->orderBy($sortBy, $sortDirection)
+            ->orderBy('UpdatedTime', 'DESC')
+            ->skip(($currentPage - 1) * $perPage)->take($perPage)
+            ->get();
+
+        return $result;
+    }
+
+    /**
+     * get bar count
+     *
+     */
+    public function getBarCount()
+    {
+        $result = $this->BarModel::count();
+
+        return $result;
+    }
+
+
+    /**
+     * add bar
+     *
+     */
+    public function addBar($bar)
+    {
+        $result = $this->BarModel::create($bar);
+
+        return $result;
+    }
+
+    /**
+     * edit bar
+     *
+     */
+    public function editBar($bar)
+    {
+        $result = $this->BarModel::find($bar['Id']);
+
+        $result->Code = $bar['Code'];
+        $result->Name = $bar['Name'];
+        $result->RealName = $bar['RealName'];
+        $result->NickName = $bar['NickName'];
+        $result->SerialNumber = $bar['SerialNumber'];
+        $result->AccessLevel = $bar['AccessLevel'];
+        $result->Phone = $bar['Phone'];
+        $result->Birthday = $bar['Birthday'];
+        $result->ContactAddress = $bar['ContactAddress'];
+        $result->ResidenceAddress = $bar['ResidenceAddress'];
+        $result->Note = $bar['Note'];
+        $result->IsDisable = $bar['IsDisable'];
+        $result->ArrivedDate = $bar['ArrivedDate'];
+        $result->LeavedDate = $bar['LeavedDate'];
+        $result->Manager = $bar['Manager'];
+        $result->FileType = $bar['FileType'];
+        $result->UpdatedTime = Carbon::now()->toDateString();
+        $result->BarSalaryType = $bar['BarSalaryType'];
+        $result->LadySalaryType = $bar['LadySalaryType'];
+        $result->ShowColumn = $bar['ShowColumn'];
+        $result->CardNumber = $bar['CardNumber'];
+        $result->SalaryPerDay = $bar['SalaryPerDay'];
+        $result->Liability = $bar['Liability'];
+        $result->BarFeeType = $bar['BarFeeType'];
+        $result->BrokerageFeePerDay = $bar['BrokerageFeePerDay'];
+        $result->BrokerageFeePerSection = $bar['BrokerageFeePerSection'];
+        $result->CleaningFee = $bar['CleaningFee'];
+        $result->SectionPerDay = $bar['SectionPerDay'];
+        $result->SectionCost1 = $bar['SectionCost1'];
+        $result->SectionCost2 = $bar['SectionCost2'];
+        $result->TakeBarFee = $bar['TakeBarFee'];
+
+        $result->save();
+
+        return $result;
+    }
+
+    /**
+     * delete bar
+     *
+     */
+    public function deleteBar($id)
+    {
+        $bar = $this->BarModel::find($id);
+
+        $bar->Status = 'Delete';
+        $bar->UpdatedTime = Carbon::now()->toDateString();
+
+        $bar->save();
+
+        return $bar;
+    }
 }

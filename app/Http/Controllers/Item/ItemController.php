@@ -497,4 +497,105 @@ class ItemController extends Controller
 
         return new ItemResource($result);
     }
+
+    /**
+     * get bar
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function getBar(ItemRequest $request)
+    {
+        if ($request->has('SortBy') && $request->SortBy != '') {
+            $sortBy = $request->SortBy;
+        }
+        else {
+            $sortBy = $this->sortBy;
+        }
+        if ($request->has('SortDesc') && $request->SortDesc != '') {
+            $sortDesc = $request->SortDesc;
+        }
+        else {
+            $sortDesc = $this->sortDesc;
+        }
+        if ($request->has('CurrentPage') && $request->CurrentPage != '') {
+            $currentPage = $request->CurrentPage;
+        }
+        else {
+            $currentPage = $this->currentPage;
+        }
+        if ($request->has('Filter') && $request->Filter != '') {
+            $filter = $request->Filter;
+        }
+        else {
+            $filter = $this->filter;
+        }
+
+        if ($sortDesc == 'true') {
+            $sortDirection = 'desc';
+        }
+        else {
+            $sortDirection = 'asc';
+        }
+
+        $result = $this->ItemService->getBar($sortBy, $sortDirection, $currentPage, $this->perPage, $filter);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * add bar
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function addBar(ItemRequest $request)
+    {
+        $result = $this->ItemService->addBar($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * edit bar
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    public function editBar(ItemRequest $request)
+    {
+        $result = $this->ItemService->editBar($request->Item);
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * delete bar
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function deleteBar(ItemRequest $request)
+    {
+        $result = $this->ItemService->deleteBar(
+            $request->Id
+        );
+        
+        return new ItemResource($result);
+    }
+
+    /**
+     * get bar misc
+     *
+     * @param App\Http\Requests\Item\ItemRequest
+     * @return App\Http\Resources\Item\ItemResource
+     */
+    
+    public function getBarMisc(ItemRequest $request)
+    {
+        $result = $this->ItemService->getBarMisc();
+        
+        return new ItemResource($result);
+    }
 }

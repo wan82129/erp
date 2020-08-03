@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： localhost
--- 產生時間： 2020 年 08 月 03 日 08:15
+-- 產生時間： 2020 年 08 月 03 日 14:29
 -- 伺服器版本： 5.7.29-0ubuntu0.18.04.1
 -- PHP 版本： 7.4.5
 
@@ -20,8 +20,28 @@ SET time_zone = "+00:00";
 --
 -- 資料庫： `erp`
 --
-CREATE DATABASE IF NOT EXISTS `erp` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `erp`;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `Bar`
+--
+
+CREATE TABLE `Bar` (
+  `Id` int(10) UNSIGNED NOT NULL,
+  `Code` varchar(100) NOT NULL COMMENT '代號',
+  `Name` varchar(100) NOT NULL COMMENT '檯名',
+  `BasePrice` int(10) NOT NULL COMMENT '基本價',
+  `Sections1` float NOT NULL COMMENT '節數',
+  `TakeBar` int(10) NOT NULL COMMENT '帶檯',
+  `IsCountTime` enum('是','否') NOT NULL DEFAULT '是' COMMENT '計時',
+  `BaseMinute` int(10) NOT NULL COMMENT '基本分鐘',
+  `TimeoutCount` int(10) NOT NULL COMMENT '逾時計時',
+  `Sections2` int(10) NOT NULL COMMENT '節數',
+  `SinglePrice` int(10) NOT NULL COMMENT '單價',
+  `UpdatedTime` date NOT NULL,
+  `Status` enum('Use','Delete') NOT NULL DEFAULT 'Use'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -229,6 +249,15 @@ INSERT INTO `SystemParameters` (`Id`, `Company`, `TaxNumber`, `BusinessTime`, `C
 --
 
 --
+-- 資料表索引 `Bar`
+--
+ALTER TABLE `Bar`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `Code` (`Code`),
+  ADD KEY `Name` (`Name`),
+  ADD KEY `Status` (`Status`);
+
+--
 -- 資料表索引 `Customer`
 --
 ALTER TABLE `Customer`
@@ -274,6 +303,12 @@ ALTER TABLE `SystemParameters`
 --
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
 --
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `Bar`
+--
+ALTER TABLE `Bar`
+  MODIFY `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `Customer`

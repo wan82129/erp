@@ -1103,6 +1103,336 @@ class ItemService
     }
 
     /**
+     * 取得bar後整理資料
+     */
+    public function getBar($sortBy, $sortDirection, $currentPage, $perPage, $filter)
+    {
+        $bars = $this->ItemRepository->getBar($sortBy, $sortDirection, $currentPage, $perPage, $filter);
+        if ($filter == '') {
+            $barsCount = $this->ItemRepository->getBarCount();
+        }
+        else {
+            $barsCount = $bars->count();
+        }
+
+        $result = $bars->transform(function($item, $key) {
+            return $item;
+        });
+
+        if ($sortDirection == 'desc') {
+            $sortDesc = true;
+        }
+        else {
+            $sortDesc = false;
+        }
+
+        $collection = collect([
+            'items' => $result,
+            'sortBy' => $sortBy,
+            'sortDesc' => $sortDesc,
+            'currentPage' => $currentPage,
+            'perPage' => $this->perPage,
+            'totalRows' => $barsCount,
+            'filter' => $filter
+        ]);
+
+        return $collection;
+    }
+
+    /**
+     * 新增bar
+     */
+    public function addBar($bar)
+    {
+        unset($bar['Id']);
+        $bar['UpdatedTime'] = Carbon::now()->toDateString();
+
+        $result = $this->ItemRepository->addBar($bar);
+
+        //驗證是否新增成功
+        if ($result->Code == $bar['Code']) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 編輯bar
+     */
+    public function editBar($bar)
+    {
+        $result = $this->ItemRepository->editBar($bar);
+
+        //驗證是否編輯成功
+        if ($result == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 刪除bar
+     */
+    public function deleteBar($id)
+    {
+        $result = $this->ItemRepository->deleteBar($id);
+
+        //驗證是否刪除成功
+        if ($result == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 取得bar其他資料
+     */
+    public function getBarMisc()
+    {
+        //for前端
+        $defaultBar = [
+            [
+                'key' => 'Id',
+                'default' => '',
+                'label' => '編號',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Code',
+                'default' => '',
+                'label' => '代號',
+                'field' => true,
+                'sortable' => true
+            ],
+            [
+                'key' => 'Name',
+                'default' => '',
+                'label' => '姓名',
+                'field' => true,
+                'sortable' => true
+            ],
+            [
+                'key' => 'RealName',
+                'default' => '',
+                'label' => '小姐本名',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'NickName',
+                'default' => '',
+                'label' => '簡稱',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'SerialNumber',
+                'default' => '',
+                'label' => '身分證',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'AccessLevel',
+                'default' => '董',
+                'label' => '職務',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Phone',
+                'default' => '',
+                'label' => '電話',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Birthday',
+                'default' => '',
+                'label' => '生日',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'ContactAddress',
+                'default' => '',
+                'label' => '聯絡地址',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'ResidenceAddress',
+                'default' => '',
+                'label' => '戶籍地址',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Note',
+                'default' => '',
+                'label' => '備註',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'IsDisable',
+                'default' => '否',
+                'label' => '下檔',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'ArrivedDate',
+                'default' => '',
+                'label' => '到職日期',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'LeavedDate',
+                'default' => '',
+                'label' => '離職日期',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Manager',
+                'default' => '',
+                'label' => '經紀人',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'FileType',
+                'default' => 'A',
+                'label' => '檔別',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'UpdatedTime',
+                'default' => '',
+                'label' => '更動日',
+                'field' => true,
+                'sortable' => false
+            ],
+            [
+                'key' => 'BarSalaryType',
+                'default' => '',
+                'label' => '幹部薪別',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'LadySalaryType',
+                'default' => '',
+                'label' => '小姐薪別',
+                'field' => false,
+                'sortable' => true
+            ],
+            [
+                'key' => 'ShowColumn',
+                'default' => '',
+                'label' => 'Show',
+                'field' => false,
+                'sortable' => true
+            ],
+            [
+                'key' => 'CardNumber',
+                'default' => '',
+                'label' => '卡號',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'SalaryPerDay',
+                'default' => '',
+                'label' => '每日保薪',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'Liability',
+                'default' => '',
+                'label' => '責任額',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'BarFeeType',
+                'default' => '',
+                'label' => '檯費類別',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'BrokerageFeePerDay',
+                'default' => '',
+                'label' => '經紀費 元/日',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'BrokerageFeePerSection',
+                'default' => '',
+                'label' => '經紀費 元/節',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'CleaningFee',
+                'default' => '',
+                'label' => '清潔費',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'SectionPerDay',
+                'default' => '',
+                'label' => '日回節數',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'SectionCost1',
+                'default' => '',
+                'label' => '節抽薪1',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'SectionCost2',
+                'default' => '',
+                'label' => '節抽薪2',
+                'field' => false,
+                'sortable' => false
+            ],
+            [
+                'key' => 'TakeBarFee',
+                'default' => '',
+                'label' => '帶檯費',
+                'field' => false,
+                'sortable' => false
+            ]
+        ];
+
+        $collection = collect([
+            'accessLevels' => $this->accessLevels,
+            'fileTypes' => $this->fileTypes,
+            'defaultItem' => $defaultBar
+        ]);
+
+        return $collection;
+    }
+
+    /**
      * get staff by code
      */
     public function getStaffByCode($code)
