@@ -27,6 +27,10 @@ const routes = [
     {
         path: '/item/:type',
         component: require('./components/Item.vue').default
+    },
+    {
+        path: '/system/parameters',
+        component: require('./components/System.vue').default
     }
 ];
 const router = new VueRouter({

@@ -48,3 +48,6 @@ Route::put('/food', 'Item\ItemController@editFood');
 Route::delete('/food', 'Item\ItemController@deleteFood');
 
 Route::get('/staff/code/{Code}', 'Item\ItemController@getStaffByCode');
+
+Route::get('/system/parameters', 'System\SystemController@getSystemParameters');
+Route::put('/system/parameters', 'System\SystemController@editSystemParameters');

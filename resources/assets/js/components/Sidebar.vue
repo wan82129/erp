@@ -25,7 +25,7 @@
     export default {
         data() {
             return {
-                redirectToSystemParameterUrl : '',
+                redirectToSystemParameterUrl : '/system/parameters',
                 redirectToStaffUrl: '/item/' + this.GLOBAL.SERVICE_STAFF,
                 redirectToCustomerUrl: '/item/' + this.GLOBAL.SERVICE_CUSTOMER,
                 redirectToRoomUrl: '/item/' + this.GLOBAL.SERVICE_ROOM,
