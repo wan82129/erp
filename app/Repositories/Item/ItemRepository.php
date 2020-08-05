@@ -8,15 +8,17 @@ use App\Models\StaffModel;
 use App\Models\CustomerModel;
 use App\Models\RoomModel;
 use App\Models\FoodModel;
+use App\Models\BarModel;
 
 class ItemRepository
 {
-    public function __construct(StaffModel $staffModel, CustomerModel $customerModel, RoomModel $roomModel, FoodModel $foodModel)
+    public function __construct(StaffModel $staffModel, CustomerModel $customerModel, RoomModel $roomModel, FoodModel $foodModel, BarModel $barModel)
     {
         $this->StaffModel = $staffModel;
         $this->CustomerModel = $customerModel;
         $this->RoomModel = $roomModel;
         $this->FoodModel = $foodModel;
+        $this->BarModel = $barModel;
     }
 
     /**
@@ -466,41 +468,10 @@ class ItemRepository
      */
     public function editBar($bar)
     {
-        $result = $this->BarModel::find($bar['Id']);
-
-        $result->Code = $bar['Code'];
-        $result->Name = $bar['Name'];
-        $result->RealName = $bar['RealName'];
-        $result->NickName = $bar['NickName'];
-        $result->SerialNumber = $bar['SerialNumber'];
-        $result->AccessLevel = $bar['AccessLevel'];
-        $result->Phone = $bar['Phone'];
-        $result->Birthday = $bar['Birthday'];
-        $result->ContactAddress = $bar['ContactAddress'];
-        $result->ResidenceAddress = $bar['ResidenceAddress'];
-        $result->Note = $bar['Note'];
-        $result->IsDisable = $bar['IsDisable'];
-        $result->ArrivedDate = $bar['ArrivedDate'];
-        $result->LeavedDate = $bar['LeavedDate'];
-        $result->Manager = $bar['Manager'];
-        $result->FileType = $bar['FileType'];
-        $result->UpdatedTime = Carbon::now()->toDateString();
-        $result->BarSalaryType = $bar['BarSalaryType'];
-        $result->LadySalaryType = $bar['LadySalaryType'];
-        $result->ShowColumn = $bar['ShowColumn'];
-        $result->CardNumber = $bar['CardNumber'];
-        $result->SalaryPerDay = $bar['SalaryPerDay'];
-        $result->Liability = $bar['Liability'];
-        $result->BarFeeType = $bar['BarFeeType'];
-        $result->BrokerageFeePerDay = $bar['BrokerageFeePerDay'];
-        $result->BrokerageFeePerSection = $bar['BrokerageFeePerSection'];
-        $result->CleaningFee = $bar['CleaningFee'];
-        $result->SectionPerDay = $bar['SectionPerDay'];
-        $result->SectionCost1 = $bar['SectionCost1'];
-        $result->SectionCost2 = $bar['SectionCost2'];
-        $result->TakeBarFee = $bar['TakeBarFee'];
-
-        $result->save();
+        $result = $this->BarModel::updateOrCreate(
+            ['Id' => $bar['Id']],
+            $bar
+        );
 
         return $result;
     }

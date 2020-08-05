@@ -507,6 +507,58 @@
                                     </div>
                                 </div>
                             </form>
+
+                            <form v-if="type === GLOBAL.SERVICE_BAR">
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">代號<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Code">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">檯名<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Name">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">基本價<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.BasePrice">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">節數<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Sections1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">帶檯<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.TakeBar">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">計時<span class="text-danger">*</span></label>
+                                        <select class="form-control" v-model="item.IsCountTime">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">基本分鐘<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.BaseMinute">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">逾時計時<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.TimeoutCount">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="col-form-label">節數<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.Sections2">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-form-label">單價<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" v-model="item.SinglePrice">
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                         <div class="modal-footer">
                             <div class="mr-auto" v-if="modalAction === modalActionEdit">
@@ -742,8 +794,6 @@
                     label: '操作',
                     sortable: false
                 });
-
-                console.log(this.fields);
             },
             initSelectedColumnExported() {
                 this.selectedColumnExported = [];
@@ -797,6 +847,10 @@
                     this.modalTitle += '貨品';
                 }
 
+                if (this.type == this.GLOBAL.SERVICE_BAR) {
+                    this.modalTitle += '檯費';
+                }
+
                 this.isModalReady = true;
             },
             initEditModal(item) {
@@ -839,6 +893,10 @@
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
                     this.modalTitle += '貨品';
                 }
+                
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
+                    this.modalTitle += '檯費';
+                }
 
                 this.isModalReady = true;
             },
@@ -869,6 +927,10 @@
                 
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
                     this.modalTitle += '貨品';
+                }
+                
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
+                    this.modalTitle += '檯費';
                 }
                     
                 this.isModalReady = true;
@@ -903,6 +965,10 @@
                 
                 if (this.type == this.GLOBAL.SERVICE_FOOD) {
                     this.modalTitle += '貨品';
+                }
+                
+                if (this.type == this.GLOBAL.SERVICE_FOOD) {
+                    this.modalTitle += '檯費';
                 }
 
                 this.isModalReady = true;
